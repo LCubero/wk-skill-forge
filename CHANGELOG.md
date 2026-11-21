@@ -8,3 +8,5 @@ This file records meaningful completed changes in chronological order, newest fi
 
 - Created the minimal repository AI harness and its visible continuity documentation.
 - Moved the stage-by-stage recreation roadmap into `docs/repo-harness/roadmap.md` (`RH-W-0001` to `RH-W-0012`) and removed root `ROADMAP.md`.
+- Added the MIT `LICENSE` and published the repository on GitHub.
+- Stopped tracking the local runtime folders `.pi/` and `.opencode/`.
