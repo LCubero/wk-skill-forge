@@ -49,33 +49,19 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Active Records
 <!-- doc-role:active-records -->
 
-### RH-W-0009
-
-| Field | Value |
-|---|---|
-| Title | Stage 9: Proportional inheritance, honest status, OS-neutral link checks |
-| Status | ready |
-| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
-| Depends on | RH-W-0008 |
-| Origin | former root `ROADMAP.md`, stage 9. Original commits: `62faf6d4`. |
-| Completed | none |
-| Remaining | recreate the stage following the Recreation Method. |
-| Evidence | none yet. |
-| Next condition | the owner says to start stage 9. |
-
 ### RH-W-0010
 
 | Field | Value |
 |---|---|
 | Title | Stage 10: Purpose-first intake and early duplicate check |
-| Status | proposed |
+| Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0009 |
 | Origin | former root `ROADMAP.md`, stage 10. Original commits: `9cb01b24`, `38495321`. |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
-| Next condition | RH-W-0009 is `completed` and the owner says to start stage 10. |
+| Next condition | the owner says to start stage 10. |
 
 ### RH-W-0011
 
@@ -218,4 +204,18 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Completed | Added Create depth levels and short-first output |
 | Remaining | none |
 | Evidence | RED (failures=7), then 10/10 OK; byte-identical to `4c12268d` after rename; commit `feat: add create depth levels and short-first output to wk-skill-forge`. |
+| Next condition | none |
+
+### RH-W-0009
+
+| Field | Value |
+|---|---|
+| Title | Stage 9: Proportional inheritance, honest status, OS-neutral link checks |
+| Status | completed |
+| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
+| Depends on | RH-W-0008 |
+| Origin | former root `ROADMAP.md`, stage 9. Original commits: `62faf6d4`. |
+| Completed | Made inheritance proportional, Create status honest, and link checks OS-neutral |
+| Remaining | none |
+| Evidence | RED (failures=21), then 10/10 OK; byte-identical to `62faf6d4` after rename; commit `fix: proportional inheritance, honest status and OS-neutral link checks in wk-skill-forge`. |
 | Next condition | none |

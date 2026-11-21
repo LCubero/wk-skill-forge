@@ -22,6 +22,7 @@ The minimal repository AI harness exists. This file is only the concise projecti
 - `RH-W-0006` is `completed`: stage 6. Calibrated audits and unified Create intake, scoped audits to the target and its normal use, and clarified MUST severity and unverified evidence
 - `RH-W-0007` is `completed`: stage 7. Hardened paths and approvals, consolidated tests, and set a single no-follow path rule with scoped effects
 - `RH-W-0008` is `completed`: stage 8. Added Create depth levels and short-first output
+- `RH-W-0009` is `completed`: stage 9. Made inheritance proportional, Create status honest, and link checks OS-neutral
 
 ## Pending Work
 
@@ -33,4 +34,4 @@ The minimal repository AI harness exists. This file is only the concise projecti
 
 <!-- doc-role:next-step -->
 
-`wk-skill-forge/` holds the skill through stage 8. `RH-W-0009` is `ready`; `RH-W-0010` to `RH-W-0012` are `proposed`, each depending on the previous one. Next: the owner says to start stage 9.
+`wk-skill-forge/` holds the skill through stage 9. `RH-W-0010` is `ready`; `RH-W-0011` to `RH-W-0012` are `proposed`, each depending on the previous one. Next: the owner says to start stage 10.

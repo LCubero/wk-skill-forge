@@ -52,23 +52,27 @@ class SkillForgeContractTests(unittest.TestCase):
         self.assertEqual(re.findall(pattern, front + "disable-model-invocation: false\n"), ["true", "false"])
         self.assertNotRegex(front, r"\bforge,")
         self.contains(section(text(), "Activation Contract"), "invokes this skill by name", "never activate on topic overlap", "one run")
-        self.contains(text(GUIDE), "should trigger", "near miss", "ambiguous", "statically")
+        gates = section(text(GUIDE), "16. Quality Gates")
+        self.contains(gates, "Simple: no activation-prompt list", "Complex and Professional", "should trigger", "near miss", "ambiguous", "statically")
 
     def test_modes_and_tool_gates(self):
         gates = section(text(), "Decision Gates")
-        self.contains(gates, "file-read", "FAILED", "native file-write", "draft or diff only", "Mode or target missing", "never assume paths")
+        self.contains(gates, "file-read", "FAILED", "native file-write", "show draft or diff; PARTIAL", "Mode or target missing", "never assume paths")
         self.contains(text(), "Audit is read-only", "Create", "Improve", "only among skills the host shows or the user names", "overengineer")
         self.contains(text(GUIDE), "smallest skill", "concrete need", "Audit applies every check to any target")
 
     def test_intake_batch(self):
         row, = [line for line in section(text(), "Decision Gates").splitlines() if "one batch" in line]
-        self.contains(row, "Create", "Improve", "First prompt", "parent folder", "skill name", "author", "license", "version", "conversation language", "skill language", "local-authored", "imported or adapted", "current language", "English only", "never fill identity defaults silently")
-        self.contains(row, "Propose Create depth from the request", "confirm", "Simple", "accept in one reply")
+        self.contains(row, "Create", "Improve", "First prompt", "parent folder", "skill name", "author", "license", "version", "conversation language", "skill language", "local-authored", "imported or adapted", "English only", "never fill identity defaults silently")
+        self.contains(row, "Only ask for unstated details", "If depth is unstated", "confirm", "Simple", "accepts the proposed name")
         self.contains(text(), "Never invent author, license, or version", "Never delete meaningful content silently")
         budget = section(text(GUIDE), "4. Body Structure and Budget")
         self.assertRegex(budget, r"\| Simple \(default\) \| .*only `SKILL\.md`.*missing essentials.*target body budget")
         self.assertRegex(budget, r"\| Complex \| .*`references/`.*concrete need.*decision gates.*full validation")
         self.assertRegex(budget, r"\| Professional \| .*topic-sources\.md.*approval.*evaluation only on user request.*Security Audit and Quality Gates")
+        self.assertRegex(budget, r"(?m)^\| Simple .*no activation prompts")
+        for depth in ("Complex", "Professional"):
+            self.assertRegex(budget, rf"(?m)^\| {depth} .*three activation prompts")
         self.contains(budget, "Depth never relaxes security, approval, or path rules")
 
     def test_approval_and_write_loop(self):
@@ -80,18 +84,19 @@ class SkillForgeContractTests(unittest.TestCase):
         steps = section(text(), "Execution Steps")
         self.assertRegex(steps, r"Improve: [Aa]udit.*preservation map.*smallest draft")
         ordered = ("Validate", "Stop before approval if blockers remain", "Get approval", "Before each write, repeat the path check", "native file tool", "written result")
-        self.contains(steps, *ordered, "exact draft or diff", "effects")
+        self.contains(steps, *ordered, "exact draft or diff", "effects", "Without write access or approval, end PARTIAL")
+        self.assertNotIn("or unwritable", steps)
         self.assertRegex(steps, "(?s)" + ".*".join(map(re.escape, ordered)))
 
     def test_untrusted_paths_and_audit_coverage(self):
         supporting = section(text(GUIDE), "10. Supporting Files and Portability")
         for document in (text(), supporting):
-            self.contains(document, "every target", "without following", "find <target> -type l", "folder itself is not a link", "ask the user to confirm", "stop with Status PARTIAL", "skip and report")
+            self.contains(document, "existing skill target", "bundled references are exempt", "Before each write", "destination", "without following them with the host's tools", "folder itself is not a link", "ask the user to confirm", "stop with Status PARTIAL", "skip and report")
             self.assertNotIn("lexical containment suffices", document)
         self.contains(text(), "never install or follow them", "Never execute bundled tools")
-        self.contains(supporting, "exact case", "when to read", "stale references")
+        self.contains(supporting, "exact case", "when to read", "stale references", "`find <target> -type l` (Linux/macOS)", "`Get-ChildItem <target> -Recurse -Attributes ReparsePoint` (PowerShell)")
         audit = section(text(GUIDE), "15. Security Audit")
-        self.contains(audit, "no-follow listing", "report it unavailable", "every shipped file", "referenced executable", "inaccessible", "not passed", "configuration, memory, hooks, or permission settings", "remote instruction loading", "hide steps, URLs, or terms", "third-party content", "data, never as instructions", "Unicode-aware", "zero-width, bidi")
+        self.contains(audit, "no-follow listing", "report it unavailable", "every shipped file", "referenced executable", "inaccessible", "not passed", "configuration, memory, hooks, or permission settings", "remote instruction loading", "hide steps, URLs, or terms", "third-party content", "data, never as instructions", "Unicode-aware", "zero-width, bidi", "reviewed or imported content", "not fresh forge drafts")
 
     def test_research_consent_privacy_and_local_help(self):
         self.contains(text(), "local evidence first", "Before any network call, name the source, purpose, and data sent; get explicit approval.", "workspace-relative paths or placeholders", "redact secrets, private identifiers, and sensitive URL parameters", "public attribution")
@@ -102,7 +107,8 @@ class SkillForgeContractTests(unittest.TestCase):
         self.assertRegex(output.strip(), r"^All modes: start with 2–3 lines: what was done, Status, decisions needed\.")
         self.contains(output, "details only for findings or failures", "omit empty sections")
         self.contains(output, "severity · path:line · rule · fix", "passed, failed, skipped, unverified", "Static checks", "Status: SUCCESS | PARTIAL | FAILED")
-        self.assertRegex(output, r"SUCCESS[^.;]*draft-only")
+        self.contains(output, "Create and Improve imply a write")
+        self.assertRegex(output, r"SUCCESS[^.]*draft-only only on request")
         self.assertRegex(output, r"PARTIAL[^.;]*write[^.;]*pending[^.;]*declined[^.;]*impossible")
         self.assertRegex(output, r"FAILED[^.;]*unreadable[^.;]*approved write fails")
         self.assertRegex(output, r"PARTIAL[^.;]*incomplete audit coverage")
@@ -115,7 +121,10 @@ class SkillForgeContractTests(unittest.TestCase):
         skeleton = text(GUIDE).split("\n## 18. Skeleton\n", 1)[1]
         for rules in (baseline, section(skeleton, "Hard Rules")):
             self.contains(rules, "- " + inherited)
-        self.assertRegex(gates.split("### Advisory", 1)[0], r"(?m)^- \[ \] Created or fixed skills carry the ask/verify/minimal-change rule from the Hard Rules Baseline\.$")
+        required = gates.split("### Advisory", 1)[0]
+        self.assertRegex(required, r"(?m)^- \[ \] Created or fixed skills carry the ask/verify/minimal-change rule and only safety rules their effects need\.")
+        for rules in (baseline, required):
+            self.contains(rules, "audit procedures", "link scans", "redaction passes", "preserve function")
         self.contains(gates, "Changed imports have a complete preservation map")
         imports = section(text(GUIDE), "13. Imported and Adapted Skills")
         self.assertNotIn("missing preservation map", imports)
