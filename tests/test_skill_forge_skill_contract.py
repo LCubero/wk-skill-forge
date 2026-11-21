@@ -2,229 +2,151 @@
 import re
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / "wk-skill-forge"
+SKILL = Path(__file__).resolve().parents[1] / "wk-skill-forge"
 GUIDE = "references/style-guide.md"
 TOPICS = "references/topic-sources.md"
 
 
+def text(name="SKILL.md"):
+    return (SKILL / name).read_text(encoding="utf-8")
+
+
+def section(document, heading):
+    return document.split(f"## {heading}\n", 1)[1].split("\n## ", 1)[0]
+
+
+def bundled_file(path):
+    return (
+        path.is_relative_to(SKILL)
+        and ".." not in path.relative_to(SKILL).parts
+        and not any(p.is_symlink() for p in (path, *path.parents) if p.is_relative_to(SKILL))
+        and path.is_file()
+    )
+
+
 class SkillForgeContractTests(unittest.TestCase):
-    def text(self, name="SKILL.md"):
-        return (SKILL / name).read_text(encoding="utf-8")
+    def contains(self, document, *terms):
+        for term in terms:
+            with self.subTest(term=term):
+                self.assertIn(term, document)
 
-    def contains(self, text, *phrases):
-        for phrase in phrases:
-            self.assertIn(phrase, text)
-
-    def test_identity_command_only_and_sections(self):
-        text = self.text()
-        front = text.split("---", 2)[1]
-        self.contains(front, "name: wk-skill-forge", "license: MIT", "author: LCubero", "origin: local-authored")
+    def test_identity_and_budget(self):
+        _, front, body = text().split("---", 2)
+        self.contains(front, f"name: {SKILL.name}", "license: MIT", "author: LCubero", 'version: "1.0"', "origin: local-authored")
         self.assertRegex(front, r'(?m)^description: "Trigger: wk-skill-forge\. .{1,132}"$')
+        self.assertEqual(re.findall(r"(?m)^## (.+)$", body), ["Activation Contract", "Hard Rules", "Decision Gates", "Execution Steps", "Output Contract", "References"])
+        self.assertLessEqual(len(body.split()) * 1.33, 700)
+        guide = text(GUIDE)
+        examples = re.findall(r"(?ms)^---\n(.*?)^---$", guide)
+        self.assertEqual(len(examples), 2)
+        for example in examples:
+            self.contains(example, "license: <SPDX>", "metadata:", "author:", "version:", "origin:")
+        self.contains(section(guide, "3. Layout and Frontmatter"), "metadata.origin", "local-authored", "adapted-portable", "imported-preserved", "review evidence")
+
+    def test_activation(self):
+        front = text().split("---", 2)[1]
+        pattern = r"(?m)^(?:disable-model-invocation|'disable-model-invocation'|\"disable-model-invocation\")[ \t]*:[ \t]*(.*)$"
+        self.assertEqual(re.findall(pattern, front), ["true"])
+        self.assertEqual(re.findall(pattern, front + "disable-model-invocation: false\n"), ["true", "false"])
         self.assertNotRegex(front, r"\bforge,")
-        self.assertEqual(1, len(re.findall(r"(?m)^disable-model-invocation: true$", front)))
-        heads = ["## Activation Contract", "## Hard Rules", "## Decision Gates", "## Execution Steps", "## Output Contract", "## References"]
-        self.assertEqual([text.index(h) for h in heads], sorted(text.index(h) for h in heads))
-        self.assertLessEqual(len(text.split("---", 2)[2].split()) * 1.33, 700)
-        self.contains(text, "End after one run")
+        self.contains(section(text(), "Activation Contract"), "invokes this skill by name", "never activate on topic overlap", "one run")
+        self.contains(text(GUIDE), "should trigger", "near miss", "ambiguous", "statically")
 
-    def test_negative_activation(self):
-        self.contains(self.text(), "Use only when the user invokes this skill", "never activate on topic overlap")
+    def test_modes_and_tool_gates(self):
+        gates = section(text(), "Decision Gates")
+        self.contains(gates, "file-read", "FAILED", "native file-write", "draft or diff only", "Mode or target missing", "never assume paths")
+        self.contains(text(), "Audit is read-only", "Create", "Improve", "host shows or the user names", "no broad search", "overengineer")
+        self.contains(text(GUIDE), "smallest skill", "concrete need", "Audit applies every check to any target")
 
-    def test_three_modes_audit_read_only_improve_approved(self):
-        text = self.text()
-        self.contains(text, "Create", "Audit", "Improve")
-        self.contains(text, "Audit is read-only")
+    def test_intake_batch(self):
+        row, = [line for line in section(text(), "Decision Gates").splitlines() if "one batch" in line]
+        self.contains(row, "Create", "Improve", "First prompt", "parent folder", "skill name", "author", "license", "version", "conversation language", "skill language", "local-authored", "imported or adapted", "current language", "English only", "never fill identity defaults silently")
+        self.contains(text(), "Never invent author, license, or version", "Never delete meaningful content silently")
 
-    def test_missing_native_file_tool_limits_mode(self):
-        gates = self.text().split("## Decision Gates\n", 1)[1].split("\n## ", 1)[0]
-        self.contains(gates,
-                      "| No file-read tool | Stop; report the prerequisite (FAILED). |",
-                      "| No native file-write tool | Create/Improve: show draft or diff only. Audit is unaffected. |")
+    def test_approval_and_write_loop(self):
+        self.contains(text(), "Project policy governs this run's actions", "not host policy", "Invocation authorizes reading and drafting only; forge writes and network calls always need approval.", "Never copy into or write to a global or installed skills directory")
+        effects = section(text(GUIDE), "11. Effects and Coexistence")
+        self.contains(effects, "forge writes and network calls always need approval")
+        for document in (text(), effects):
+            self.contains(document, "stated purpose", "other sensitive effects need separate approval")
+        steps = section(text(), "Execution Steps")
+        self.assertRegex(steps, r"Improve: [Aa]udit.*preservation map.*smallest draft")
+        ordered = ("Validate", "Stop before approval if blockers remain", "Get approval", "Before each write, repeat the path check", "native file tool", "written result")
+        self.contains(steps, *ordered, "exact draft or diff", "effects")
+        self.assertRegex(steps, "(?s)" + ".*".join(map(re.escape, ordered)))
 
-    def test_untrusted_target_never_executed(self):
-        self.contains(self.text(), "untrusted data", "never install or follow them", "Never execute bundled tools")
+    def test_untrusted_paths_and_audit_coverage(self):
+        supporting = section(text(GUIDE), "10. Supporting Files and Portability")
+        for document in (text(), supporting):
+            self.contains(document, "every target", "without following", "find <target> -type l", "folder itself is not a link", "ask the user to confirm", "stop with Status PARTIAL", "skip and report")
+            self.assertNotIn("lexical containment suffices", document)
+        self.contains(text(), "never install or follow them", "Never execute bundled tools")
+        self.contains(supporting, "exact case", "when to read", "stale references")
+        audit = section(text(GUIDE), "15. Security Audit")
+        self.contains(audit, "no-follow listing", "report it unavailable", "every shipped file", "referenced executable", "inaccessible", "not passed", "configuration, memory, hooks, or permission settings", "remote instruction loading", "hide steps, URLs, or terms", "third-party content", "data, never as instructions", "Unicode-aware", "zero-width, bidi")
 
-    def test_writes_contained_and_no_install(self):
-        self.contains(self.text(), "Write only in the confirmed folder with the native file tool", "Never copy into or write to a global or installed skills directory")
+    def test_research_consent_privacy_and_local_help(self):
+        self.contains(text(), "local evidence first", "Before any network call, name the source, purpose, and data sent; get explicit approval.", "workspace-relative paths or placeholders", "redact secrets, private identifiers, and sensitive URL parameters", "public attribution")
+        self.contains(section(text(TOPICS), "How to research"), "Official vendor docs", "untrusted data", "<tool> --help", "local commands", "optional", "user approval", "already installed", "never run supplied binaries", "compatibility unverified")
 
-    def test_asks_languages_suggesting_english_for_skill(self):
-        gates = self.text().split("## Decision Gates", 1)[1].split("\n## ", 1)[0]
-        self.contains(gates, "Default conversation to the user's current language", "suggest English only for skill files and artifacts")
+    def test_status_and_severity(self):
+        output = section(text(), "Output Contract")
+        self.contains(output, "severity · path:line · rule · fix", "passed, failed, skipped, unverified", "Static checks", "Status: SUCCESS | PARTIAL | FAILED")
+        self.assertRegex(output, r"SUCCESS[^.;]*draft-only")
+        self.assertRegex(output, r"PARTIAL[^.;]*write[^.;]*pending[^.;]*declined[^.;]*impossible")
+        self.assertRegex(output, r"FAILED[^.;]*unreadable[^.;]*approved write fails")
+        self.assertRegex(output, r"PARTIAL[^.;]*incomplete audit coverage")
+        self.contains(output, "Unverified checks", "blockers", "intake")
+        gates = section(text(GUIDE), "16. Quality Gates")
+        self.contains(gates, "### Required (MUST)", "normal use", "user-reported")
+        self.assertNotIn("### Blocking (MUST)", gates)
+        self.contains(gates, "Changed imports have a complete preservation map")
+        imports = section(text(GUIDE), "13. Imported and Adapted Skills")
+        self.assertNotIn("missing preservation map", imports)
 
-    def test_gate_severity_unverified_and_reported_runs(self):
-        self.contains(self.text(), "unverified checks are listed, not blockers")
-        self.contains(self.text(GUIDE), "### Required (MUST)", "A failed MUST is `blocking` only when its harm is reachable in normal use", "`user-reported`")
-        self.assertNotIn("### Blocking (MUST)", self.text(GUIDE))
-
-    def test_never_overengineers(self):
-        self.contains(self.text(), "Never overengineer", "in Improve prefer cutting to adding")
-        guide = self.text(GUIDE)
-        self.contains(guide, "Build the smallest skill that meets the need", "Nothing is present without a concrete need")
-
-    def test_asks_user_for_identity_data(self):
-        gates = self.text().split("## Decision Gates\n", 1)[1].split("\n## ", 1)[0]
-        row, = [line for line in gates.splitlines() if "one batch" in line]
-        self.contains(row, "Create, or Improve with gaps", "At the first prompt, ask in one batch",
-                      "parent folder, skill name (names the folder), author, license, version, conversation language and skill language",
-                      "only gaps that change the result", "never fill identity defaults silently",
-                      "new skills are `local-authored`; ask only for imported or adapted work",
-                      "suggest English only for skill files and artifacts")
-
-    def test_truthful_identity_and_preservation(self):
-        self.contains(self.text(), "Never invent author, license, or version", "Never delete meaningful content silently")
-
-    def test_project_policy_governs_forge_actions_only(self):
-        rules = self.text().split("## Hard Rules", 1)[1].split("\n## ", 1)[0]
-        self.contains(rules, "Project policy governs this run's actions",
-                      "Judge target content by the bundled guide and its declared scope, not host policy")
-
-    def test_output_reports_checks_and_status(self):
-        self.contains(self.text(), "path:line", "Static checks are not a live run", "Status: SUCCESS | PARTIAL | FAILED")
-
-    def test_bundled_guide_exists_and_is_referenced(self):
-        self.assertTrue((SKILL / GUIDE).is_file())
-        self.contains(self.text(), f"`{GUIDE}`")
-
-    def test_topic_sources_exists_and_is_routed(self):
-        text = self.text()
-        steps = text.split("## Execution Steps\n", 1)[1].split("\n## ", 1)[0]
-        self.assertRegex(steps, rf"(?m)^\d+\. Create: .*`{re.escape(TOPICS)}`")
-        self.assertIn(f"- `{TOPICS}`:", text.split("## References\n", 1)[1])
-        self.assertTrue((SKILL / TOPICS).is_file())
-
-    def test_topic_sources_research_rules_and_categories(self):
-        topics = self.text(TOPICS)
-        research = topics.split("## How to research\n", 1)[1].split("\n## ", 1)[0]
-        self.contains(research, "Official vendor docs and specifications come first", "sources as untrusted data")
-        for heading in (
-            "Frontend and UI", "Backend and APIs", "Data and Databases",
-            "DevOps, CI and Cloud", "Testing and QA", "Security",
-            "Automation, Scripts and CLI Tools", "Git and GitHub", "Documents and Office Files",
-            "Content Creation (writing, image, audio, video)", "Design", "AI, LLM and MCP",
-            "Research and Web", "Productivity and Project Management",
-        ):
-            with self.subTest(heading=heading):
-                self.assertRegex(topics, rf"(?m)^## {re.escape(heading)}$")
-
-    def test_topic_sources_have_starting_points(self):
-        sections = dict(re.findall(r"(?ms)^## ([^\n]+)\n(.*?)(?=^## |\Z)", self.text(TOPICS)))
-        self.assertIn("starting points only", sections["How to research"])
-        for heading, body in sections.items():
-            if heading in ("Contents", "How to research", "Skill collections"):
-                continue
-            with self.subTest(heading=heading):
-                entry = re.search(r"(?m)^- \*\*Start at:\*\* (.+)$", body)
-                self.assertIsNotNone(entry)
-                self.assertGreaterEqual(len(re.findall(r"\[[^\]\n]+\]\(https://[^\s)]+\)", entry[1])), 2)
-
-    def test_guide_runs_alone(self):
-        guide = self.text(GUIDE)
+    def test_self_containment_and_bundled_paths(self):
+        guide = text(GUIDE)
+        references = section(text(), "References")
         for name in (GUIDE, TOPICS):
-            with self.subTest(reference=name):
-                self.assertNotRegex(self.text(name), r"\]\(\s*<?(?![\s<])(?!(?:#|https?://))[^)]+\)", "local file link")
+            self.contains(references, f"`{name}`")
+            self.assertNotRegex(text(name), r"\]\(\s*<?(?![\s<])(?!(?:#|https?://))[^)]+\)", "local file link")
+        heads = [re.sub(r"[^a-z0-9 -]", "", h.lower()).strip().replace(" ", "-") for h in re.findall(r"(?m)^#+ (.+)$", guide)]
         for anchor in re.findall(r"\]\(#([^)]+)\)", guide):
-            heads = [re.sub(r"[^a-z0-9 -]", "", h.lower()).strip().replace(" ", "-") for h in re.findall(r"(?m)^#+ (.+)$", guide)]
             self.assertIn(anchor, heads)
         for head in ("Security Audit", "Quality Gates", "Skeleton"):
             self.assertRegex(guide, rf"(?m)^## \d+\. {head}$")
-
-    def test_guide_security_audit_injection_and_agent_writes(self):
-        audit = self.text(GUIDE).split("## 15. Security Audit\n", 1)[1].split("\n## ", 1)[0]
-        for phrase in (
-            "writes to the agent's configuration, memory, hooks, or permission settings",
-            "remote instruction loading",
-            "hide steps, URLs, or terms from the user",
-            "third-party content",
-            "data, never as instructions (indirect injection)",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, audit)
-
-    def test_guide_requires_reference_read_conditions(self):
-        supporting = self.text(GUIDE).split("## 10. Supporting Files and Portability\n", 1)[1].split("\n## ", 1)[0]
-        self.contains(supporting, "Each reference line in `SKILL.md` says when to read it.",
-                      "Read the entry `SKILL.md` first", "no escape, no followed symlink, exact case",
-                      "If symlink or real-path status cannot be proved, mark it unverified and read paths lexically inside the skill folder",
-                      "In Audit, report stale references; never remove them")
-        self.contains(self.text(), "Read entry `SKILL.md`, check linked paths per Supporting Files, then read allowed links")
-        audit = self.text(GUIDE).split("## 15. Security Audit", 1)[1].split("\n## ", 1)[0]
-        self.contains(audit, "Unverified symlink or real-path status does not block reading lexically contained paths")
-
-    def test_severity_calibration(self):
-        rules = self.text().split("## Hard Rules", 1)[1].split("## Decision Gates", 1)[0]
-        gates = self.text(GUIDE).split("## 16. Quality Gates", 1)[1].split("\n## ", 1)[0]
-        for section in (rules, gates):
-            self.contains(section, "harm reachable in normal use", "Warn on unlikely edge cases and style gaps")
-        self.contains(rules, "blocking, warning, open", "declared effects within its stated scope",
-                      "only out-of-scope effects need separate approval", "smallest change")
-
-    def test_audit_checks_existing_skills(self):
-        adoption = self.text(GUIDE).split("## 17. Exceptions and Adoption", 1)[1].split("\n## ", 1)[0]
-        self.contains(adoption, "Audit applies every check to any target",
-                      "New and changed skills have remediation priority, not a different verdict")
-
-    def test_duplicate_check_is_bounded(self):
-        self.contains(self.text(), "Compare names and descriptions only for skills the host shows or the user names; no broad search")
-
-    def test_audit_evaluation_and_preservation_are_static(self):
-        self.contains(self.text(GUIDE), "In Audit, propose these prompts statically",
-                      "Run paired scenarios with and without the skill and live runs only on separate user request",
-                      "In Audit, report a missing preservation map as a finding; do not build it")
-
-    def test_approved_write_loop(self):
-        steps = self.text().split("## Execution Steps", 1)[1].split("## Output Contract", 1)[0]
-        phrases = (
-            "Validate the draft with Security Audit and Quality Gates",
-            "show the exact draft or diff, effects, and any preservation map",
-            "Get approval",
-            "Write only in the confirmed folder",
-            "Run Security Audit and Quality Gates on the written result and report it",
-        )
-        self.contains(steps, *phrases)
-        positions = [steps.index(phrase) for phrase in phrases]
-        self.assertEqual(positions, sorted(positions))
-
-    def test_research_consent_and_privacy(self):
-        rules = self.text().split("## Hard Rules", 1)[1].split("## Decision Gates", 1)[0]
-        self.contains(rules, "Research local evidence first", "Before any network call, name the source, purpose, and data sent; get explicit approval", "mark claims unverified", "Never execute bundled tools", "Reports, drafts, and queries use workspace-relative paths or placeholders", "redact secrets, private identifiers, and sensitive URL parameters", "Keep approved public attribution")
-
-    def test_identity_examples(self):
-        examples = re.findall(r"(?ms)^---\n(.*?)^---$", self.text(GUIDE))
-        self.assertEqual(len(examples), 2)
-        for example in examples:
-            self.assertRegex(example, r'(?m)^metadata:\n  author: .+\n  version: "<agreed version>"\n  origin: <class>$')
-
-    def test_findings_and_status_precedence(self):
-        output = self.text().split("## Output Contract", 1)[1].split("## References", 1)[0]
-        self.contains(output, "severity · path:line · rule · fix", "passed, failed, skipped, unverified", "When waiting for intake, ask the batch and end with `Status: PARTIAL`", "Not supplied is not unreadable", "FAILED takes precedence for unreadable targets or failed approved writes")
-
-    def test_verification_is_executable(self):
-        self.contains(self.text(GUIDE), "Unicode-aware search for invisible format/control characters (zero-width, bidi)", "inspect matches or mark unverified", "three prompts: should trigger, near miss, ambiguous")
-
-    def test_bundled_paths_resolve(self):
-        for name in ("SKILL.md", GUIDE, TOPICS):
-            targets = re.findall(r"`([^`\n]+)`|\]\(([^)\n]+)\)", self.text(name))
-            for code, link in targets:
-                target = (code or link).strip()
-                if re.fullmatch(r"<[^<>]+>", target) or re.match(r"\w+://", target):
-                    continue
-                if re.match(r"(?:\./|\.\./)*(?:references|assets|scripts)/.+", target):
-                    if re.search(r"<[^<>]+>", target):
-                        continue
-                    with self.subTest(document=name, target=target):
-                        path = SKILL / target.split("#", 1)[0]
-                        self.assertTrue(path.resolve().is_relative_to(SKILL.resolve()))
-                        self.assertTrue(path.is_file())
-
-    def test_no_local_leakage(self):
-        text = "\n".join(self.text(name) for name in ("SKILL.md", GUIDE, TOPICS))
-        self.assertIsNone(re.search(r"(?<![A-Za-z])[A-Za-z]:[\\/]", text), "absolute drive path")
-        # Official HTTPS link destinations may contain /docs/ without being local paths.
-        self.assertNotIn("docs/", re.sub(r"\]\(https://[^\s)]+\)", "]()", text))
+        documents = "\n".join(text(name) for name in ("SKILL.md", GUIDE, TOPICS))
+        for code, link in re.findall(r"`([^`\n]+)`|\]\(([^)\n]+)\)", documents):
+            target = (code or link).strip()
+            if re.match(r"(?:\./|\.\./)*(?:references|assets|scripts)/.+", target) and not re.search(r"<[^<>]+>", target):
+                with self.subTest(target=target):
+                    self.assertTrue(bundled_file(SKILL / target.split("#", 1)[0]))
+        path = SKILL / GUIDE
+        for linked in (path, path.parent, SKILL):
+            with self.subTest(linked=linked), patch.object(type(path), "is_symlink", lambda candidate: candidate == linked):
+                self.assertFalse(bundled_file(path))
+        self.assertNotRegex(documents, r"(?<![A-Za-z])[A-Za-z]:[\\/]", "absolute drive path")
+        self.assertNotIn("docs/", re.sub(r"\]\(https://[^\s)]+\)", "]()", documents))
         for leak in ("LD9", "Users/", "00-skillssss", "repo-harness", "0_skill", "adaptation-playbook", "REPO-HARNESS.md", "odd/tasks/", "tests/test_skill_forge_skill_contract.py"):
-            self.assertNotIn(leak, text)
+            self.assertNotIn(leak, documents)
+
+    def test_topic_sources(self):
+        self.assertRegex(section(text(), "Execution Steps"), rf"(?m)^\d+\. Create: .*`{re.escape(TOPICS)}`")
+        topics = text(TOPICS)
+        self.contains(topics, "starting points only")
+        for heading in (
+            "Frontend and UI", "Backend and APIs", "Data and Databases", "DevOps, CI and Cloud",
+            "Testing and QA", "Security", "Automation, Scripts and CLI Tools", "Git and GitHub",
+            "Documents and Office Files", "Content Creation (writing, image, audio, video)", "Design",
+            "AI, LLM and MCP", "Research and Web", "Productivity and Project Management",
+        ):
+            with self.subTest(heading=heading):
+                entry = re.search(r"(?m)^- \*\*Start at:\*\* (.+)$", section(topics, heading))
+                self.assertIsNotNone(entry)
+                self.assertGreaterEqual(len(re.findall(r"\[[^\]\n]+\]\(https://[^\s)]+\)", entry[1])), 2)
+        self.contains(section(topics, "Productivity and Project Management"), "CommonMark", "GFM", "Mermaid", "notes", "diagrams")
 
 
 if __name__ == "__main__":

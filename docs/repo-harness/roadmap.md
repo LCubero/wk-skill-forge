@@ -49,33 +49,19 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Active Records
 <!-- doc-role:active-records -->
 
-### RH-W-0007
-
-| Field | Value |
-|---|---|
-| Title | Stage 7: Safe paths, approvals, single no-follow rule |
-| Status | ready |
-| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
-| Depends on | RH-W-0006 |
-| Origin | former root `ROADMAP.md`, stage 7. Original commits: `aa62be51`, `dd643f31`. |
-| Completed | none |
-| Remaining | recreate the stage following the Recreation Method. |
-| Evidence | none yet. |
-| Next condition | the owner says to start stage 7. |
-
 ### RH-W-0008
 
 | Field | Value |
 |---|---|
 | Title | Stage 8: Create depth levels and short-first output |
-| Status | proposed |
+| Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0007 |
 | Origin | former root `ROADMAP.md`, stage 8. Original commits: `4c12268d`. |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
-| Next condition | RH-W-0007 is `completed` and the owner says to start stage 8. |
+| Next condition | the owner says to start stage 8. |
 
 ### RH-W-0009
 
@@ -218,4 +204,18 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Completed | Calibrated audits and unified Create intake, scoped audits to the target and its normal use, and clarified MUST severity and unverified evidence |
 | Remaining | none |
 | Evidence | RED (failures=12), then 31/31 OK; byte-identical to `201c84f4` after rename; commit `fix: calibrate wk-skill-forge audits to the target and normal use`. |
+| Next condition | none |
+
+### RH-W-0007
+
+| Field | Value |
+|---|---|
+| Title | Stage 7: Safe paths, approvals, single no-follow rule |
+| Status | completed |
+| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
+| Depends on | RH-W-0006 |
+| Origin | former root `ROADMAP.md`, stage 7. Original commits: `aa62be51`, `dd643f31`. |
+| Completed | Hardened paths and approvals, consolidated tests, and set a single no-follow path rule with scoped effects |
+| Remaining | none |
+| Evidence | RED (failures=44), then 10/10 OK; byte-identical to `dd643f31` after rename; commit `fix: harden wk-skill-forge paths and approvals with a single no-follow rule`. |
 | Next condition | none |
