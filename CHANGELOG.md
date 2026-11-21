@@ -6,6 +6,7 @@ This file records meaningful completed changes in chronological order, newest fi
 
 ## 2026-11-21
 
+- Tagged `v1.0.0` on the stage 10 commit: the recreation milestone v0, identical to the original version 0 after the rename.
 - Stage 10: Purpose-first intake with an early, scoped duplicate check merged into intake, no-follow inventory, and needed-tool checks; folded reference commit `b48d2c0d` (lighter partial intake, real-input test hint, document checks), closing version 0 (`RH-W-0010`).
 - Stage 9: Made inheritance proportional, Create status honest, and link checks OS-neutral (`RH-W-0009`).
 - Stage 8: Added Create depth levels and short-first output (`RH-W-0008`).
