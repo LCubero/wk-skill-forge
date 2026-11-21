@@ -47,6 +47,9 @@ class SkillForgeContractTests(unittest.TestCase):
     def test_writes_contained_and_no_install(self):
         self.contains(self.text(), "Write only inside the skill folder the user names", "Never copy into or write to a global or installed skills directory")
 
+    def test_asks_user_for_identity_data(self):
+        self.contains(self.text(), "Ask the user for the skill name, author, license, version, and origin in one batch", "never fill identity defaults silently")
+
     def test_truthful_identity_and_preservation(self):
         self.contains(self.text(), "Never invent author, license, or version", "Never delete meaningful content silently")
 

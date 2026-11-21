@@ -49,33 +49,19 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Active Records
 <!-- doc-role:active-records -->
 
-### RH-W-0004
-
-| Field | Value |
-|---|---|
-| Title | Stage 4: Ask for skill identity data and languages |
-| Status | ready |
-| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
-| Depends on | RH-W-0003 |
-| Origin | former root `ROADMAP.md`, stage 4. Original commits: `b5ef7bbb`; `b7b15e22` moved to `RH-W-0005` by date, because without the stage 5 compaction the body exceeds its 700-token budget. |
-| Completed | none |
-| Remaining | recreate the stage following the Recreation Method. |
-| Evidence | none yet. |
-| Next condition | the owner says to start stage 4. |
-
 ### RH-W-0005
 
 | Field | Value |
 |---|---|
 | Title | Stage 5: Approvals, research consent, no overengineering |
-| Status | proposed |
+| Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0004 |
 | Origin | former root `ROADMAP.md`, stage 5. Original commits: `40f0a1f7`, `ad87065d` (reference-only), `5e96e368`, and `b7b15e22` (moved from `RH-W-0004`). |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
-| Next condition | RH-W-0004 is `completed` and the owner says to start stage 5. |
+| Next condition | the owner says to start stage 5. |
 
 ### RH-W-0006
 
@@ -218,4 +204,18 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Completed | Hardened the guide with field and security lessons, limited activation to the skill name, and added the no-native-file-tool gate; folded reference commit `805f5b6b` (bundled file list in `references/companion-index.md`) |
 | Remaining | none |
 | Evidence | RED (failures=8), then 16/16 OK; byte-identical to `805f5b6b` after rename; commit `feat: harden wk-skill-forge guide with field and security lessons`. |
+| Next condition | none |
+
+### RH-W-0004
+
+| Field | Value |
+|---|---|
+| Title | Stage 4: Ask for skill identity data and languages |
+| Status | completed |
+| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
+| Depends on | RH-W-0003 |
+| Origin | former root `ROADMAP.md`, stage 4. Original commits: `b5ef7bbb`; `b7b15e22` moved to `RH-W-0005` by date, because without the stage 5 compaction the body exceeds its 700-token budget. |
+| Completed | Made the skill ask for identity data (name, author, license, version, origin) in one batch and never fill identity defaults silently |
+| Remaining | none |
+| Evidence | RED (failures=1), then 17/17 OK; byte-identical to `b5ef7bbb` after rename; commit `feat: make wk-skill-forge ask for skill identity data`. |
 | Next condition | none |
