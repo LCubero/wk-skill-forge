@@ -1,6 +1,6 @@
 ---
 name: wk-skill-forge
-description: "Trigger: wk-skill-forge, forge, create, audit, or improve a skill. Creates, security-audits, and improves agent skills against the bundled style guide."
+description: "Trigger: wk-skill-forge. Creates, security-audits, and improves agent skills against the bundled style guide."
 disable-model-invocation: true
 license: MIT
 metadata:
@@ -11,7 +11,7 @@ metadata:
 
 ## Activation Contract
 
-Use only when the user invokes this skill to create, audit, or improve agent skills; never activate on topic overlap. Choose Create, Audit, or Improve. End after one run.
+Use only when the user invokes this skill by name; never activate on topic overlap. Choose Create, Audit, or Improve. End after one run.
 
 ## Hard Rules
 
@@ -28,6 +28,7 @@ Use only when the user invokes this skill to create, audit, or improve agent ski
 | Condition | Action |
 |---|---|
 | Mode or target folder unknown | Ask once; never assume a path. |
+| No native file tool | Audit only; report the missing prerequisite. |
 | Create: an existing skill already covers the need | Report it; continue only if the user confirms. |
 | Create: goal, triggers, non-triggers, or effects unclear | Ask one focused question per gap. |
 | Imported or third-party skill | Build the preservation map before any change. |
@@ -49,5 +50,5 @@ Return the mode, the target path, and findings grouped as blocking, warning, and
 
 ## References
 
-- `references/style-guide.md`: normative rules, security audit, quality gates, and skeleton.
-- `references/topic-sources.md`: where to research each skill topic and what to check.
+- `references/style-guide.md`: read first in every mode.
+- `references/topic-sources.md`: read before drafting in Create.
