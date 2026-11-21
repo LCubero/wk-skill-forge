@@ -49,33 +49,19 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Active Records
 <!-- doc-role:active-records -->
 
-### RH-W-0005
-
-| Field | Value |
-|---|---|
-| Title | Stage 5: Approvals, research consent, no overengineering |
-| Status | ready |
-| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
-| Depends on | RH-W-0004 |
-| Origin | former root `ROADMAP.md`, stage 5. Original commits: `40f0a1f7`, `ad87065d` (reference-only), `5e96e368`, and `b7b15e22` (moved from `RH-W-0004`). |
-| Completed | none |
-| Remaining | recreate the stage following the Recreation Method. |
-| Evidence | none yet. |
-| Next condition | the owner says to start stage 5. |
-
 ### RH-W-0006
 
 | Field | Value |
 |---|---|
 | Title | Stage 6: Calibrated audits scoped to the target and normal use |
-| Status | proposed |
+| Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0005 |
 | Origin | former root `ROADMAP.md`, stage 6. Original commits: `59cc1e9f`, `5469f39a`, `201c84f4`. |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
-| Next condition | RH-W-0005 is `completed` and the owner says to start stage 6. |
+| Next condition | the owner says to start stage 6. |
 
 ### RH-W-0007
 
@@ -218,4 +204,18 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Completed | Made the skill ask for identity data (name, author, license, version, origin) in one batch and never fill identity defaults silently |
 | Remaining | none |
 | Evidence | RED (failures=1), then 17/17 OK; byte-identical to `b5ef7bbb` after rename; commit `feat: make wk-skill-forge ask for skill identity data`. |
+| Next condition | none |
+
+### RH-W-0005
+
+| Field | Value |
+|---|---|
+| Title | Stage 5: Approvals, research consent, no overengineering |
+| Status | completed |
+| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
+| Depends on | RH-W-0004 |
+| Origin | former root `ROADMAP.md`, stage 5. Original commits: `40f0a1f7`, `ad87065d` (reference-only), `5e96e368`, and `b7b15e22` (moved from `RH-W-0004`). |
+| Completed | Closed audit gaps on approval, research consent, and checks; forbade overengineering; asked conversation and skill languages suggesting English; folded reference commit `ad87065d` (verified official entry points per topic) |
+| Remaining | none |
+| Evidence | RED (failures=12), then 26/26 OK; byte-identical to `b7b15e22` after rename; commit `feat: add approvals, research consent and no overengineering to wk-skill-forge`. |
 | Next condition | none |

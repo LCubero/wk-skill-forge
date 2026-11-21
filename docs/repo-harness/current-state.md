@@ -18,6 +18,7 @@ The minimal repository AI harness exists. This file is only the concise projecti
 - `RH-W-0002` is `completed`: stage 2. Added the bundled `references/topic-sources.md` research guide, routed it from Create, and tightened the body budget to 700 tokens; files match original `227a24c6` renamed.
 - `RH-W-0003` is `completed`: stage 3. Hardened the guide with field and security lessons, limited activation to the skill name, and added the no-native-file-tool gate; folded reference commit `805f5b6b` (bundled file list in `references/companion-index.md`)
 - `RH-W-0004` is `completed`: stage 4. Made the skill ask for identity data (name, author, license, version, origin) in one batch and never fill identity defaults silently
+- `RH-W-0005` is `completed`: stage 5. Closed audit gaps on approval, research consent, and checks; forbade overengineering; asked conversation and skill languages suggesting English; folded reference commit `ad87065d` (verified official entry points per topic)
 
 ## Pending Work
 
@@ -29,4 +30,4 @@ The minimal repository AI harness exists. This file is only the concise projecti
 
 <!-- doc-role:next-step -->
 
-`wk-skill-forge/` holds the skill through stage 4. `RH-W-0005` is `ready`; `RH-W-0006` to `RH-W-0012` are `proposed`, each depending on the previous one. Next: the owner says to start stage 5.
+`wk-skill-forge/` holds the skill through stage 5. `RH-W-0006` is `ready`; `RH-W-0007` to `RH-W-0012` are `proposed`, each depending on the previous one. Next: the owner says to start stage 6.
