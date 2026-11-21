@@ -35,4 +35,4 @@ The minimal repository AI harness exists. This file is only the concise projecti
 
 <!-- doc-role:next-step -->
 
-`wk-skill-forge/` holds the skill through stage 10. `RH-W-0011` is `ready`; `RH-W-0012` to `RH-W-0012` are `proposed`, each depending on the previous one. Next: the owner says to start stage 11.
+`wk-skill-forge/` holds the skill through stage 10. `RH-W-0011` is `ready`; `RH-W-0012` is `proposed` and depends on it. Next: the owner says to start stage 11.
