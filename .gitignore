@@ -1,0 +1,5 @@
+.codegraph/
+/.repo-harness/tmp/
+/.repo-harness/archive/
+/.repo-harness/state/
+/.repo-harness/memory-bk/

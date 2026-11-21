@@ -1,0 +1,149 @@
+# Preservation And Safety
+
+## The Whole Model
+
+For a new or effectively empty repository, the harness creates the complete useful baseline after plan approval, including `README.md`. For an existing repository, preservation means informed approved evolution: analyze relevant content, reuse what is sound, and propose concrete improvements or additions.
+
+Never overwrite or archive existing content without explicit approval. When content is obsolete, structurally incompatible, or the user prefers a reset, offer a distinct conversational choice to preserve the superseded content and start from a clean generated baseline. Archive alone does not clean the baseline. Only after that choice is resolved should the builder form the deterministic content-bound apply plan. Apply requires its digest and refuses when the current plan differs.
+
+## Default Evidence
+
+Scope planning evidence to intended write paths, relevant existing ancestors, and canonical renderer inputs. A full-tree strict snapshot may be used when requested, but is not the default.
+
+## Classification
+
+| Target | Result |
+|---|---|
+| Absent | Create it |
+| Present with exactly the rendered bytes | Already identical; nothing to do |
+| Present with useful content | Analyze it and propose an integrated update |
+| Present but obsolete or incompatible | Discuss preservation and clean-baseline preparation separately; archive does not remove sources |
+| Selected root pointer missing its exact directive | Append only the smallest newline-delimited directive |
+| Selected root pointer already containing its exact directive | Leave every byte unchanged |
+| Root `.gitignore` missing a required exact directive | Create it or append only missing directives; preserve all existing bytes and line endings |
+| `--no-codegraph-ignore` selected | Record `project.ignoreCodegraph: false`; suppress only `.codegraph/`, retaining the four harness-local-state directives and all existing lines |
+| Root `.gitattributes` lacks the repository-wide `* text=auto eol=lf` rule | Append that one rule, preserving all existing bytes and line endings |
+| A later `.gitattributes` line sets a non-LF line ending | Propose an explained re-append of `* text=auto eol=lf` at the end |
+| Present as a directory or indirect target | Refuse apply before creating anything |
+
+Root pointer detection matches the exact directive as a complete line. Substrings, comments, prefixes, suffixes, and near-matches do not count. Append preserves every existing byte, uses the file's consistent CRLF convention when present, otherwise uses LF, and adds only the separator needed plus the directive and its terminating newline.
+
+The same byte-preserving integration applies narrowly to root `.gitignore`. Default render records `project.ignoreCodegraph: true` and includes `.codegraph/`. Every render also includes `/.repo-harness/tmp/`, `/.repo-harness/archive/`, `/.repo-harness/state/`, and `/.repo-harness/memory-bk/`. `--no-codegraph-ignore` records false and suppresses only the `.codegraph/` directive, not `.gitignore` or the four local-state directives. `check` reads that manifest boolean so an explicit opt-out is never reinterpreted. Existing lines are never removed. The builder never creates or writes anything inside `.codegraph/` and manages no ignore rules beyond these five directives.
+
+Existing ignore rules can hide the harness: repositories often ignore `.claude/`, `.opencode/`, `.pi/`, `AGENTS.md`, or `CLAUDE.md`. Before approval, run read-only `git check-ignore` on the planned paths and tell the human which generated files, runtime projections, or root pointers are ignored, because a fresh clone would lack them: ignored generated files or runtime projections make a fresh clone's checker report `drift`, while ignored root pointers leave agents without the rulebook route and the checker never inspects root pointers. When any are ignored, ask one short conversational question before the apply approval: keep them local (the default; nothing changes), or version them, in which case propose the exact `.gitignore` lines to remove and edit them only after approval. Ignore rules never change without that choice.
+
+Root `.gitattributes` is also human-owned. The builder manages one repository-wide line, `* text=auto eol=lf`, because LF everywhere keeps the exact-byte contract checking compares and stops unchanged files from looking modified when one working copy is used from different operating systems. It creates that line when the file is absent, appends it with the existing newline convention when missing, and leaves a file that already has it byte-identical. Matching assignments are evaluated in order. A later line that sets a non-LF line ending on any path triggers a proposed re-append of the rule at the end; binary markers do not. Earlier exact `<path> text eol=lf` lines stay valid and are never removed. Files already committed with CRLF are not rewritten; the owner runs `git add --renormalize .` once.
+
+## Prior-Version Upgrades
+
+Audit installed manifest data, generated markers, managed files, and runtime projections before planning. Use `current` for exact rendered bytes, `stale` for current-generator drift, `missing` for absent paths, `human-evolved` for structurally valid human-owned content that differs from the current render (a human edit or text an earlier builder version generated), and `legacy` only when older repo-harness-builder provenance is proven. Unknown provenance is never enough to claim generated ownership.
+
+An update completes in one pass. The checker and its manifest are replaced together in the same transaction, because a checker embeds the digest of the exact manifest bytes it was written for, and replacing it alone leaves it naming bytes nobody wrote and failing with a digest mismatch. Never present a two-pass repair as an update.
+
+Upgrade analysis never archives or deletes automatically; the separate archive-copy command is described below. A generated file may receive an executable replacement only when the authenticated installed manifest owns its exact path and its current bytes retain builder provenance, whatever version that provenance names. This includes human-modified generated bytes that retain a valid builder marker: preview exposes and binds their exact source SHA-256, destination SHA-256, path, action kind, and approved plan digest. Apply recomputes the plan and all digests, rejects any post-preview source change, then replaces the exact output in the same rollback transaction as create and append actions. Human-owned and `human-evolved` files allow only the bounded integrations described below; other legacy and unverifiable files receive proposal choices only. Never silently delete.
+
+An upgrade replaces generated skills but keeps human-owned files, so their earlier generated text can contradict the new skills, and `check` cannot tell that text from a human edit. After an upgrade, report every `human-evolved` file as possibly outdated, compare it with a fresh render into an empty directory, and propose only the changes the human approves.
+
+The manifest and checker are one digest contract. The manifest retains the selected generated-skill license because that authenticated fact is the smallest state from which builder `check()` can reproduce expected bytes; arbitrary installed skill bytes are not authority. Historical authenticated manifests without the field retain unknown license authority, so inspection does not infer MIT and planning does not replace license-dependent skill bytes or the manifest/checker pair until the caller supplies the trusted license explicitly. Desired outputs must contain a checker rendered from the desired manifest SHA-256. When explicit authority permits either member of the pair to change, planning preserves consistency: an authenticated changed manifest is replaceable without a generated marker because the installed checker proves its exact bytes, and a changed checker is executable only when it matches the desired manifest. Apply commits the pair in the same rollback transaction.
+
+The fixed generated-skill transition remains a separate bounded migration. Migration authority requires the installed manifest to declare the exact three legacy harness skills and every exact manifest-owned source to match deterministic generated bytes. Normal render preview may then emit one `migrate-generated-skills` action bound to source, destination, manifest, checker, and removal digests. Unrelated `{project_id}-*` skills are human-owned unless their exact paths are declared by that validated manifest and their bytes match exactly. Prefixes, directory scans, and similar names never grant replacement or removal authority.
+
+When a migration removes generated skill paths, the preview must also report the documents that survive it while still naming a removed skill. Emit `survivingLegacyReferences` beside the plan with the exact path, line, and skill for each surviving reference, and keep it outside the plan dictionary so it never enters the approval digest. Scope is tracked markdown that this apply neither overwrites nor deletes; untracked or ignored tool state stays out, because the tool that writes it owns it. Without a readable Git index report `unavailable`, never a clean result. This reports and never rewrites: a human-owned document keeps every byte, and the human decides what changes. Repeat the surviving references in the apply report, because the next preview no longer contains the migration and cannot list them again. The rulebook is the costly case, because its decision gates are read at the start of every session.
+
+## Adding A Runtime Later
+
+Widening or narrowing the runtime set puts `.repo-harness/manifest.json` and `.repo-harness/check.py` in the plan's `replace` list. Approved apply rewrites them together to the requested set; no deletion is needed. Report the difference before approval. Widening needs the full desired set in one approved render. Narrowing leaves the removed runtime's projections on disk but drops their checker coverage; the human decides whether to keep or manually remove them.
+
+The plan and check carry `runtimeSet.recorded`, `requested`, and `matches`. Widening also reports `unrecorded` and `staleManifest`; the latter names the manifest and checker that the plan will replace.
+
+The check also carries `packageFreshness`, which answers a different question than per-file drift: is the installed harness behind the builder now running? It reports `state`, `installed`, and `running`. `fresh` means the recorded generator equals the running version. `stale` means the installation is behind and an update exists. `ahead` means the installed harness was written by a later builder than the one running, and it carries a `warning`: relay it, because continuing is the user's risk to accept and not yours to absorb. `absent` means there is no manifest or no recorded generator version. `unverifiable` means the manifest is unreadable, reached through a link, not an object, or carries a version that is not a version. Freshness mutates nothing and never enters the per-file report, because package staleness and projection drift are different failures with different fixes. Report it on its own and never present `stale` as file drift.
+
+`CHANGELOG.md` needs no special case. If it exists, it is left alone like anything else. If it is absent, the standard dated changelog is created.
+
+Root `README.md` is part of the complete baseline for a new or effectively empty repository. In an existing repository, read and analyze the README, then propose an informed update that preserves useful project-specific content and improves gaps. Generated ownership markers may bound generated material, but they never justify refusing analysis or improvement. If integration is unsuitable, discuss preservation and clean-baseline preparation separately; the archive command cannot archive human-owned README prose. This choice must not require `APROBAR`; exact uppercase approval remains exclusive to the builder's content-bound apply plan. Never mutate or archive the README until the user approves the exact proposed action.
+
+README language selectors are atomic across peers. When an existing `README.md` does not already link reciprocally to `README.es.md`, bind a bounded append of the exact selector block to the content-bound plan, carrying its current and result digests, and create the peer in the same apply. The append preserves every existing byte and the file's newline convention, and adds nothing but the selector; the README is never rewritten or reordered. When `README.md` is absent the complete baseline already carries the selector, and when it exists but is not a regular file the append cannot be verified, so remove `README.es.md` from `create`, report it in `blocked` with the required `README.md` integration, and refuse the entire apply. Never create a one-way Spanish peer or report bilingual completeness.
+
+## Human-Owned Versus Generated
+
+After creation, two kinds of file behave differently under builder `check`:
+
+- **Generated**: canonical skills, runtime projections, wrappers, and the manifest. Compared byte for byte. Exact bytes report `current`; different bytes report `stale`, or `legacy` when a recognized builder marker names a different generator version.
+- **Human-owned**: root `README.md`, `.gitignore`, `.gitattributes`, the rulebook, `CHANGELOG.md`, and everything under `docs/repo-harness/`. `.gitignore` keeps every existing byte and only receives approved missing exact directives described above. `.gitattributes` keeps every existing byte and receives the missing repository-wide `* text=auto eol=lf` rule, or its re-append after a later non-LF override, through normal plan approval. Other human-owned files are compared by the sections they promise. This tolerance supports project-specific evolution; it does not freeze content or remove the builder's duty to analyze and propose improvements.
+
+Render reports `humanSuggestions` with `suggestions`, `markerProposals`, `ambiguousPaths`, and `acceptedDivergences`. A suggestion restores one registered missing obligation line, not arbitrary prose. Select with `--suggestion-choice accept|keep|declare-intentional-divergence`, `--suggestion-id`, and `--suggestion-evidence-sha256`. Accepting a suggestion or declaring divergence through a marker proposal adds one digest-bound plan action that still needs approval. `keep` is session-only. `ambiguous` means edited prose prevents a safe proposal; the human edits manually.
+
+### Archive Copies
+
+Use `archive --root DIR --source PATH --inspect` to inspect eligibility, or omit `--inspect` for a read-only digest preview. Apply with `archive --root DIR --source PATH --apply --approved-plan-sha256 HASH`. Only manifest-owned generated files qualify. The command copies into `.repo-harness/archive/` without removing the source; it does not clean human-owned prose or produce a clean baseline.
+
+For root `README.md` and `README.es.md`, builder `check` requires the harness seed sections only when the existing file declares the `repository-harness` role or either `repo-harness-builder` boundary. A preserved product README without those declarations is `human-evolved`, not missing a harness section; a bilingual language selector alone does not declare that section. If all declarations are removed, current bytes cannot establish prior harness ownership.
+
+For human-owned prose, builder `check` also validates applicable locale content. Changed bytes retaining the promised sections and locale contract report `human-evolved`, not drift; exact rendered bytes report `current`. Missing sections report `sections-missing`, and incomplete locale content reports `locale-content-incomplete`. The installed generated checker has the narrower boundary below; it does not validate human-owned prose.
+
+## Approval
+
+Integrated capability preflight is evidence, not approval state. Derive Gentle AI and Engram effective states independently from the separate `not_found`, `found_on_path`, and `verified` detector outcomes. Preserve both outcomes, degrade only behavior owned by an unavailable capability, and fail closed only when the selected operation or repository policy requires that capability. Do not persist detection or effective states, combine component authority, copy receipts or conflicts, or retry until a desired result appears. Promotion of reusable knowledge requires verified relevance, a selected canonical repository owner, and human approval; changing external facts are dated and revalidated before reuse.
+
+During an active `repo-harness-builder` skill execution, after conversational repository-shape and integration choices are resolved, show all four action sets and the current content-bound apply plan digest only for a nonempty executable plan. When the create set is grouped or counted for the human, attribute each root pointer to the runtime that requires it, never with the common core. `CLAUDE.md` counts toward `claude-code`; `AGENTS.md` counts toward `opencode` or `pi`, and a combination selecting both counts the one shared file once. Only `REPO-HARNESS.md` and `CHANGELOG.md` are common. A summary that inflates the common count understates what each profile costs. Relay `approvalPrompt` exactly as printed by the current preview; the localized answers and invalid-answer message belong to `references/audit-and-interview.md`. Do not reconstruct or mix languages in the approval block. Never normalize an answer or reuse an earlier preview digest. Apply requires the approved current digest and fails closed when pointer bytes or another planned target changed. Outside that active execution, use ordinary conversational approval rules. Approval of repository writes never approves Git, provider, backup, or publication actions.
+
+When `create`, `append`, `replace`, and `migrate` are all empty, there is nothing to approve: end without an approval request, and say there are no changes; omit empty action sets and the plan digest. Report the harness current only when `blocked` is also empty and `check` reports `current`; otherwise report each blocked entry and the check result, and say the harness is not complete.
+
+## Containment And Its Honest Limit
+
+Reject unsafe relative paths, absolute paths, parent traversal, invalid existing targets, and indirect existing ancestors before any write. Apply the same ancestor guard before every check read. After each create, confirm the resolved path is still inside the selected root and remove it if it is not.
+
+This is proportional containment for a cooperative working copy. It is not a security boundary against an attacker who can replace directories underneath a running process. Version control is the real safety net, and the tool says so rather than implying a guarantee it does not provide.
+
+## Failure Behavior
+
+Refuse indirect targets and unsafe paths. Verify created bytes, pointer result digests, replacements, and links after writing. On failure, restore every replaced or appended file to its exact original bytes and remove only files this run created when their bytes still match what this run wrote. The bounded generated-skill migration additionally restores exact source, manifest, checker, and appended bytes and removes fixed destinations if any migration or additive continuation phase fails. Never replace or delete other pre-existing content.
+
+## Failure Ownership
+
+Classify the failing owner before any provider handoff. Work outward from the innermost failing component and name the evidence that decided it.
+
+| Evidence | Owner | Required route |
+|---|---|---|
+| A generated checker rejects a manifest the same builder emitted | `repo-harness-builder` | Preserve the consumer unchanged, capture the reproduction, upgrade the builder, regenerate through a fresh approved plan |
+| Canonical and package projections differ | `repo-harness-builder` | Stop the release and synchronize projections |
+| A provider command itself fails after valid builder output reached its documented boundary | that provider | Offer provider reporting separately from repository publication |
+| The consumer is not a Git repository | absent consumer Git capability | Report locally; never initialize, clone, publish, or alter review mode |
+
+A mismatch among builder-generated output, manifest, checker, or package projection is a `repo-harness-builder` defect. It never enters provider-defect reporting, issue creation, or repository publication, because the failing bytes were written by this builder and the fix belongs at their canonical source. Patching a generated consumer file directly masks the source defect and leaves every future installation exposed.
+
+Builder-owned remediation preserves consumer state, names the exact reproduction, and gives a reproducible upgrade and regeneration path. A consumer that is not a Git repository needs no clone-scope review-mode command and no publication offer; say so plainly instead of implying either. Keep optional provider-defect reporting and repository publication described as separate things, since one creates an issue for a provider and the other creates or pushes a repository.
+
+## Generated Checker Boundary
+
+The generated checker trusts no mutable manifest field until the exact manifest bytes match its embedded SHA-256. It then requires the exact checker schema, an `integrationMode` of `integrated` or `standalone`, supported runtimes, safe canonical skill names, and repository-relative paths. It rejects absolute, drive-qualified, parent-traversing, symlinked, reparse-point, and outside-resolving paths before content reads. Its scope includes manifest integrity, the four harness-local-state ignore directives, canonical runtime skill projections, declared command/prompt projections, and optional authenticated `canonicalProjections` for product files. It neither creates nor inspects local-state contents. Ordinary no-command checking reports `writes: 0`; only explicit `repair --apply --approved-plan-sha256 <digest>` may create authenticated `missing-local` projections under its bounded repair contract. See [state vocabulary](validation.md#state-vocabulary) for checker and repair outcomes; the local-state ignore entry reports `present` or `directive-missing`. It does not check human-owned document sections, root pointers, or `.gitattributes` coverage; those belong to builder `check`.
+
+Concurrent hostile filesystem mutation is a residual outside the cooperative repository model. The checker adds no lock, service, transaction coordinator, or other mechanism for it; exclusive creation, immediate verification, and bounded rollback preserve only the stated repair contract.
+
+## Authority Privacy Boundary
+
+The bindings exist so a human can review what an answer rested on without the tool republishing
+it. Four rules hold on every output path, including the failure paths:
+
+- Do not print the absolute target path. The destination is identified by `targetBindingSha256`,
+  which is computed from the normalized resolved root and then discarded.
+- Do not print raw evidence. A `repository_file` binding returns its repository-relative locator
+  and digest; a `host_json` binding returns its source and digest. The bytes never appear.
+- Do not print premise values or decision statements. They are replaced by an explicit redaction
+  marker rather than omitted, because a reader has to see that something was withheld.
+- Report capability classification metadata only. `detect_gentle_ai()` and `detect_engram()` keep
+  the complete evidence internally because the verification needs it, and
+  `capability_projection()` removes it from every printed surface. The host supplies its own
+  Engram evidence, so echoing that object back would publish whatever payload it carried.
+
+Success, denial, validation failure, and the `fresh preview` refusal each hold these rules
+independently. A refusal that names which field disagreed would leak the evidence by describing
+it, so every authority failure at apply returns one content-free outcome instead.
+
+The first-write boundary is unchanged and is not widened by any of this. All authority validation
+happens before `write_outputs()` begins. Once the mutation path starts, the existing rollback and
+post-first-write remediation boundary remains authoritative, and the tool makes no new recovery
+claim beyond it.
+
+The tool cannot detect a correction the host never sent, and it does not verify truth beyond the
+bindings it was given. It says so rather than implying an assurance it does not provide.
