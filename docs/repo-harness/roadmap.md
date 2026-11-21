@@ -18,11 +18,11 @@ This roadmap is the canonical lifecycle owner. Track only non-trivial work with 
 
 `wk-skill-forge` is recreated from its first version, one stage at a time. The owner says which stage to work on; never continue into the next stage on your own.
 
-The original lives in `E:\code\00-skillssss` as `0_skill/mis_skills/wk-skill-forge-ld9/` (renamed here to `wk-skill-forge`). Read a stage's commits there, read-only:
+The original lives in `<original-repo>`, a local clone of the original repository, as `0_skill/mis_skills/wk-skill-forge-ld9/` (renamed here to `wk-skill-forge`). Read a stage's commits there, read-only:
 
 ```
-git -C E:/code/00-skillssss show --stat <hash>
-git -C E:/code/00-skillssss show <hash> -- 0_skill/mis_skills/wk-skill-forge-ld9 tests
+git -C <original-repo> show --stat <hash>
+git -C <original-repo> show <hash> -- 0_skill/mis_skills/wk-skill-forge-ld9 tests
 ```
 
 Recreate the intent, not a blind copy. Replace every `wk-skill-forge-ld9` with `wk-skill-forge`. Improvements over the original are welcome when the owner agrees.

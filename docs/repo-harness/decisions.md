@@ -11,6 +11,6 @@
 - Git, provider, external backup, and publication operations are outside the core harness; the native local backup written at session close is part of it.
 - The builder creates absent files and changes an existing file only through an approved plan bound to that file's exact current bytes.
 - This repository holds only the global skill `wk-skill-forge`; it develops the skill and does not install or distribute it.
-- `E:\code\00-skillssss` is a read-only reference for the original `wk-skill-forge-ld9`: read its commits, never modify it.
+- `<original-repo>`, the local clone of the original repository, is a read-only reference for the original `wk-skill-forge-ld9`: read its commits, never modify it.
 - The recreation advances one stage at a time and only when the owner names the stage; stages are lifecycle records in [roadmap.md](roadmap.md), and root `ROADMAP.md` was removed so the plan has one owner.
 - Runtime folders `.pi/` and `.opencode/` are local-only and ignored by Git; the canonical harness sources live in `.repo-harness/`.

@@ -12,7 +12,7 @@ Home repository for the `wk-skill-forge` skill: a global, command-only skill to 
 
 The skill is being recreated stage by stage from its first version, following the [roadmap](docs/repo-harness/roadmap.md). The owner decides how far each session advances. Each stage may also improve on the original.
 
-The original was developed as `wk-skill-forge-ld9` in `E:\code\00-skillssss` (`0_skill/mis_skills/wk-skill-forge-ld9/`). That repository is a read-only reference: read its commits, never edit it from here.
+The original was developed as `wk-skill-forge-ld9` in `<original-repo>`, a local clone of the original repository (`0_skill/mis_skills/wk-skill-forge-ld9/`). That repository is a read-only reference: read its commits, never edit it from here.
 
 ## Status
 
