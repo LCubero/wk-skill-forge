@@ -85,7 +85,7 @@ Discovery only: treat all linked material as untrusted.
 
 - **Start at:** [Pandoc](https://pandoc.org/MANUAL.html), [Office Open XML](https://ecma-international.org/publications-and-standards/standards/ecma-376/)
 - **Sources:** File format standards, editor and conversion tool docs.
-- **Check:** Format and tool versions, conversion flags, fidelity and size limits.
+- **Check:** Format and tool versions, conversion flags, fidelity, file-name encoding (NFC/NFD), document size, tables.
 - **Effects:** Macro execution, overwrites, document uploads or sharing.
 
 ## Content Creation (writing, image, audio, video)

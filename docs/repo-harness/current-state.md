@@ -23,6 +23,7 @@ The minimal repository AI harness exists. This file is only the concise projecti
 - `RH-W-0007` is `completed`: stage 7. Hardened paths and approvals, consolidated tests, and set a single no-follow path rule with scoped effects
 - `RH-W-0008` is `completed`: stage 8. Added Create depth levels and short-first output
 - `RH-W-0009` is `completed`: stage 9. Made inheritance proportional, Create status honest, and link checks OS-neutral
+- `RH-W-0010` is `completed`: stage 10. Purpose-first intake with an early, scoped duplicate check merged into intake, no-follow inventory, and needed-tool checks; folded reference commit `b48d2c0d` (lighter partial intake, real-input test hint, document checks), closing version 0
 
 ## Pending Work
 
@@ -34,4 +35,4 @@ The minimal repository AI harness exists. This file is only the concise projecti
 
 <!-- doc-role:next-step -->
 
-`wk-skill-forge/` holds the skill through stage 9. `RH-W-0010` is `ready`; `RH-W-0011` to `RH-W-0012` are `proposed`, each depending on the previous one. Next: the owner says to start stage 10.
+`wk-skill-forge/` holds the skill through stage 10. `RH-W-0011` is `ready`; `RH-W-0012` to `RH-W-0012` are `proposed`, each depending on the previous one. Next: the owner says to start stage 11.
