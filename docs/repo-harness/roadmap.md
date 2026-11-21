@@ -49,33 +49,19 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Active Records
 <!-- doc-role:active-records -->
 
-### RH-W-0001
-
-| Field | Value |
-|---|---|
-| Title | Stage 1: First version: skill with bundled style guide |
-| Status | ready |
-| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
-| Depends on | none |
-| Origin | former root `ROADMAP.md`, stage 1. Original commits: `3c5d14e7`. |
-| Completed | none |
-| Remaining | recreate the stage following the Recreation Method. |
-| Evidence | none yet. |
-| Next condition | the owner says to start stage 1. |
-
 ### RH-W-0002
 
 | Field | Value |
 |---|---|
 | Title | Stage 2: Topic research guide |
-| Status | proposed |
+| Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0001 |
 | Origin | former root `ROADMAP.md`, stage 2. Original commits: `227a24c6`. |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
-| Next condition | RH-W-0001 is `completed` and the owner says to start stage 2. |
+| Next condition | the owner says to start stage 2. |
 
 ### RH-W-0003
 
@@ -220,4 +206,16 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Resolved Records
 <!-- doc-role:resolved-records -->
 
-No project-specific records have been resolved.
+### RH-W-0001
+
+| Field | Value |
+|---|---|
+| Title | Stage 1: First version: skill with bundled style guide |
+| Status | completed |
+| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
+| Depends on | none |
+| Origin | former root `ROADMAP.md`, stage 1. Original commits: `3c5d14e7`. |
+| Completed | Recreated `wk-skill-forge/SKILL.md` (original renamed to `wk-skill-forge`), the byte-identical bundled `references/style-guide.md`, and `tests/test_skill_forge_skill_contract.py` (paths and name adapted). |
+| Remaining | none |
+| Evidence | `python -B -m unittest tests.test_skill_forge_skill_contract`: RED before the skill existed, then 11/11 OK; commit `feat: add wk-skill-forge first version with bundled style guide`. |
+| Next condition | none |

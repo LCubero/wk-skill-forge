@@ -16,4 +16,4 @@ The original was developed as `wk-skill-forge-ld9` in `E:\code\00-skillssss` (`0
 
 ## Status
 
-Not started. No skill files exist yet; stage 1 creates them.
+Stage 1 of 12 done: `wk-skill-forge/` holds the first version (1.0). Progress lives in the [roadmap](docs/repo-harness/roadmap.md).
