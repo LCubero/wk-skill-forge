@@ -49,33 +49,19 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Active Records
 <!-- doc-role:active-records -->
 
-### RH-W-0006
-
-| Field | Value |
-|---|---|
-| Title | Stage 6: Calibrated audits scoped to the target and normal use |
-| Status | ready |
-| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
-| Depends on | RH-W-0005 |
-| Origin | former root `ROADMAP.md`, stage 6. Original commits: `59cc1e9f`, `5469f39a`, `201c84f4`. |
-| Completed | none |
-| Remaining | recreate the stage following the Recreation Method. |
-| Evidence | none yet. |
-| Next condition | the owner says to start stage 6. |
-
 ### RH-W-0007
 
 | Field | Value |
 |---|---|
 | Title | Stage 7: Safe paths, approvals, single no-follow rule |
-| Status | proposed |
+| Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0006 |
 | Origin | former root `ROADMAP.md`, stage 7. Original commits: `aa62be51`, `dd643f31`. |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
-| Next condition | RH-W-0006 is `completed` and the owner says to start stage 7. |
+| Next condition | the owner says to start stage 7. |
 
 ### RH-W-0008
 
@@ -218,4 +204,18 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Completed | Closed audit gaps on approval, research consent, and checks; forbade overengineering; asked conversation and skill languages suggesting English; folded reference commit `ad87065d` (verified official entry points per topic) |
 | Remaining | none |
 | Evidence | RED (failures=12), then 26/26 OK; byte-identical to `b7b15e22` after rename; commit `feat: add approvals, research consent and no overengineering to wk-skill-forge`. |
+| Next condition | none |
+
+### RH-W-0006
+
+| Field | Value |
+|---|---|
+| Title | Stage 6: Calibrated audits scoped to the target and normal use |
+| Status | completed |
+| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
+| Depends on | RH-W-0005 |
+| Origin | former root `ROADMAP.md`, stage 6. Original commits: `59cc1e9f`, `5469f39a`, `201c84f4`. |
+| Completed | Calibrated audits and unified Create intake, scoped audits to the target and its normal use, and clarified MUST severity and unverified evidence |
+| Remaining | none |
+| Evidence | RED (failures=12), then 31/31 OK; byte-identical to `201c84f4` after rename; commit `fix: calibrate wk-skill-forge audits to the target and normal use`. |
 | Next condition | none |
