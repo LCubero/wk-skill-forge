@@ -6,6 +6,7 @@ This file records meaningful completed changes in chronological order, newest fi
 
 ## 2026-11-21
 
+- Stage 8: Added Create depth levels and short-first output (`RH-W-0008`).
 - Stage 7: Hardened paths and approvals, consolidated tests, and set a single no-follow path rule with scoped effects (`RH-W-0007`).
 - Stage 6: Calibrated audits and unified Create intake, scoped audits to the target and its normal use, and clarified MUST severity and unverified evidence (`RH-W-0006`).
 - Stage 5: Closed audit gaps on approval, research consent, and checks; forbade overengineering; asked conversation and skill languages suggesting English; folded reference commit `ad87065d` (verified official entry points per topic) (`RH-W-0005`).

@@ -49,33 +49,19 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Active Records
 <!-- doc-role:active-records -->
 
-### RH-W-0008
-
-| Field | Value |
-|---|---|
-| Title | Stage 8: Create depth levels and short-first output |
-| Status | ready |
-| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
-| Depends on | RH-W-0007 |
-| Origin | former root `ROADMAP.md`, stage 8. Original commits: `4c12268d`. |
-| Completed | none |
-| Remaining | recreate the stage following the Recreation Method. |
-| Evidence | none yet. |
-| Next condition | the owner says to start stage 8. |
-
 ### RH-W-0009
 
 | Field | Value |
 |---|---|
 | Title | Stage 9: Proportional inheritance, honest status, OS-neutral link checks |
-| Status | proposed |
+| Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0008 |
 | Origin | former root `ROADMAP.md`, stage 9. Original commits: `62faf6d4`. |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
-| Next condition | RH-W-0008 is `completed` and the owner says to start stage 9. |
+| Next condition | the owner says to start stage 9. |
 
 ### RH-W-0010
 
@@ -218,4 +204,18 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Completed | Hardened paths and approvals, consolidated tests, and set a single no-follow path rule with scoped effects |
 | Remaining | none |
 | Evidence | RED (failures=44), then 10/10 OK; byte-identical to `dd643f31` after rename; commit `fix: harden wk-skill-forge paths and approvals with a single no-follow rule`. |
+| Next condition | none |
+
+### RH-W-0008
+
+| Field | Value |
+|---|---|
+| Title | Stage 8: Create depth levels and short-first output |
+| Status | completed |
+| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
+| Depends on | RH-W-0007 |
+| Origin | former root `ROADMAP.md`, stage 8. Original commits: `4c12268d`. |
+| Completed | Added Create depth levels and short-first output |
+| Remaining | none |
+| Evidence | RED (failures=7), then 10/10 OK; byte-identical to `4c12268d` after rename; commit `feat: add create depth levels and short-first output to wk-skill-forge`. |
 | Next condition | none |

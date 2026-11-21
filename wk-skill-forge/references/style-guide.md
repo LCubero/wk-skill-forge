@@ -98,6 +98,14 @@ Use these sections in order; skip one only when truly irrelevant, and never add 
 
 Measure whitespace-delimited words after frontmatter × 1.33.
 
+| Create depth | Scope |
+|---|---|
+| Simple (default) | Write only `SKILL.md`; ask only for missing essentials; target body budget. |
+| Complex | `references/` only for concrete need; decision gates; full validation. |
+| Professional | Research via `references/topic-sources.md` (network requires approval); evaluation only on user request; full Security Audit and Quality Gates. |
+
+Depth never relaxes security, approval, or path rules.
+
 Keep mandatory rules in the body. The body MUST NOT become a file manifest (see Supporting Files and Portability).
 
 ## 5. Writing Rules
@@ -126,6 +134,7 @@ Keep mandatory rules in the body. The body MUST NOT become a file manifest (see 
 Adapt this baseline to the skill, then add its own rules. Each rule must be observable or testable.
 
 ```text
+- Ask when something is missing or unclear; never assume; verify with real tool output; make the smallest change that works.
 - Defer to the user, project policy, and any managed workflow that owns the
   current phase, gate, artifact, review, or verdict. Use the active
   conversation language.
@@ -156,7 +165,7 @@ Conversation language and artifact language are separate: answer in the user's l
 - Report only what tool output confirms. Never infer prior states, counts, or success; exit code 0 means "completed without errors", nothing more.
 - List failed, skipped, and unverified work separately.
 - Write dates and times in local time unless the user asks otherwise.
-- Workflow skills end with one line `Status: SUCCESS | PARTIAL | FAILED` and define each value in one line.
+- Workflow skills report one line `Status: SUCCESS | PARTIAL | FAILED` (in a short summary first, or at the end) and define each value in one line.
 
 ## 10. Supporting Files and Portability
 
@@ -246,6 +255,7 @@ A failed MUST is `blocking` only when its harm is reachable in normal use; other
 - [ ] Security Audit has no blocking finding; consent and authority boundaries hold.
 - [ ] Compare description and Activation Contract; propose three prompts: should trigger, near miss, ambiguous. In Audit, propose these prompts statically. For explicit-only skills, check that only explicit invocation qualifies.
 - [ ] Frontmatter is complete, truthful, and valid; the name matches the folder.
+- [ ] Created or fixed skills carry the ask/verify/minimal-change rule from the Hard Rules Baseline.
 - [ ] Mandatory rules are in the body; the body is not a file manifest.
 - [ ] Supporting Files and Portability has no blocking finding.
 - [ ] Capabilities are declared with a prerequisite or fallback.
@@ -289,6 +299,7 @@ Use when <exact condition>. <What does not authorize action.> End after one run.
 
 ## Hard Rules
 
+- Ask when something is missing or unclear; never assume; verify with real tool output; make the smallest change that works.
 - Defer to the user, project policy, and any managed workflow. Use the active conversation language.
 - Require <capabilities>; never install or authenticate automatically.
 - Never <sensitive effect> without explicit approval. Keep artifacts inside the user-requested workspace.

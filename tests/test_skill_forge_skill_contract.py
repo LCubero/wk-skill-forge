@@ -57,13 +57,19 @@ class SkillForgeContractTests(unittest.TestCase):
     def test_modes_and_tool_gates(self):
         gates = section(text(), "Decision Gates")
         self.contains(gates, "file-read", "FAILED", "native file-write", "draft or diff only", "Mode or target missing", "never assume paths")
-        self.contains(text(), "Audit is read-only", "Create", "Improve", "host shows or the user names", "no broad search", "overengineer")
+        self.contains(text(), "Audit is read-only", "Create", "Improve", "only among skills the host shows or the user names", "overengineer")
         self.contains(text(GUIDE), "smallest skill", "concrete need", "Audit applies every check to any target")
 
     def test_intake_batch(self):
         row, = [line for line in section(text(), "Decision Gates").splitlines() if "one batch" in line]
         self.contains(row, "Create", "Improve", "First prompt", "parent folder", "skill name", "author", "license", "version", "conversation language", "skill language", "local-authored", "imported or adapted", "current language", "English only", "never fill identity defaults silently")
+        self.contains(row, "Propose Create depth from the request", "confirm", "Simple", "accept in one reply")
         self.contains(text(), "Never invent author, license, or version", "Never delete meaningful content silently")
+        budget = section(text(GUIDE), "4. Body Structure and Budget")
+        self.assertRegex(budget, r"\| Simple \(default\) \| .*only `SKILL\.md`.*missing essentials.*target body budget")
+        self.assertRegex(budget, r"\| Complex \| .*`references/`.*concrete need.*decision gates.*full validation")
+        self.assertRegex(budget, r"\| Professional \| .*topic-sources\.md.*approval.*evaluation only on user request.*Security Audit and Quality Gates")
+        self.contains(budget, "Depth never relaxes security, approval, or path rules")
 
     def test_approval_and_write_loop(self):
         self.contains(text(), "Project policy governs this run's actions", "not host policy", "Invocation authorizes reading and drafting only; forge writes and network calls always need approval.", "Never copy into or write to a global or installed skills directory")
@@ -93,6 +99,8 @@ class SkillForgeContractTests(unittest.TestCase):
 
     def test_status_and_severity(self):
         output = section(text(), "Output Contract")
+        self.assertRegex(output.strip(), r"^All modes: start with 2–3 lines: what was done, Status, decisions needed\.")
+        self.contains(output, "details only for findings or failures", "omit empty sections")
         self.contains(output, "severity · path:line · rule · fix", "passed, failed, skipped, unverified", "Static checks", "Status: SUCCESS | PARTIAL | FAILED")
         self.assertRegex(output, r"SUCCESS[^.;]*draft-only")
         self.assertRegex(output, r"PARTIAL[^.;]*write[^.;]*pending[^.;]*declined[^.;]*impossible")
@@ -102,6 +110,12 @@ class SkillForgeContractTests(unittest.TestCase):
         gates = section(text(GUIDE), "16. Quality Gates")
         self.contains(gates, "### Required (MUST)", "normal use", "user-reported")
         self.assertNotIn("### Blocking (MUST)", gates)
+        inherited = "Ask when something is missing or unclear; never assume; verify with real tool output; make the smallest change that works."
+        baseline = section(text(GUIDE), "7. Hard Rules Baseline")
+        skeleton = text(GUIDE).split("\n## 18. Skeleton\n", 1)[1]
+        for rules in (baseline, section(skeleton, "Hard Rules")):
+            self.contains(rules, "- " + inherited)
+        self.assertRegex(gates.split("### Advisory", 1)[0], r"(?m)^- \[ \] Created or fixed skills carry the ask/verify/minimal-change rule from the Hard Rules Baseline\.$")
         self.contains(gates, "Changed imports have a complete preservation map")
         imports = section(text(GUIDE), "13. Imported and Adapted Skills")
         self.assertNotIn("missing preservation map", imports)
@@ -133,7 +147,7 @@ class SkillForgeContractTests(unittest.TestCase):
             self.assertNotIn(leak, documents)
 
     def test_topic_sources(self):
-        self.assertRegex(section(text(), "Execution Steps"), rf"(?m)^\d+\. Create: .*`{re.escape(TOPICS)}`")
+        self.assertRegex(section(text(), "Execution Steps"), rf"(?m)^\d+\. Create: .*Professional:.*`{re.escape(TOPICS)}`")
         topics = text(TOPICS)
         self.contains(topics, "starting points only")
         for heading in (
