@@ -57,7 +57,7 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0003 |
-| Origin | former root `ROADMAP.md`, stage 4. Original commits: `b5ef7bbb`, `b7b15e22`. |
+| Origin | former root `ROADMAP.md`, stage 4. Original commits: `b5ef7bbb`; `b7b15e22` moved to `RH-W-0005` by date, because without the stage 5 compaction the body exceeds its 700-token budget. |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
@@ -71,7 +71,7 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Status | proposed |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0004 |
-| Origin | former root `ROADMAP.md`, stage 5. Original commits: `40f0a1f7`, `5e96e368`. |
+| Origin | former root `ROADMAP.md`, stage 5. Original commits: `40f0a1f7`, `ad87065d` (reference-only), `5e96e368`, and `b7b15e22` (moved from `RH-W-0004`). |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
