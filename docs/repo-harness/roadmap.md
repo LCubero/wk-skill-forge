@@ -49,33 +49,19 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Active Records
 <!-- doc-role:active-records -->
 
-### RH-W-0002
-
-| Field | Value |
-|---|---|
-| Title | Stage 2: Topic research guide |
-| Status | ready |
-| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
-| Depends on | RH-W-0001 |
-| Origin | former root `ROADMAP.md`, stage 2. Original commits: `227a24c6`. |
-| Completed | none |
-| Remaining | recreate the stage following the Recreation Method. |
-| Evidence | none yet. |
-| Next condition | the owner says to start stage 2. |
-
 ### RH-W-0003
 
 | Field | Value |
 |---|---|
 | Title | Stage 3: Field and security lessons in the guide |
-| Status | proposed |
+| Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0002 |
 | Origin | former root `ROADMAP.md`, stage 3. Original commits: `4b772551`. |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
-| Next condition | RH-W-0002 is `completed` and the owner says to start stage 3. |
+| Next condition | the owner says to start stage 3. |
 
 ### RH-W-0004
 
@@ -218,4 +204,18 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Completed | Recreated `wk-skill-forge/SKILL.md` (original renamed to `wk-skill-forge`), the byte-identical bundled `references/style-guide.md`, and `tests/test_skill_forge_skill_contract.py` (paths and name adapted). |
 | Remaining | none |
 | Evidence | `python -B -m unittest tests.test_skill_forge_skill_contract`: RED before the skill existed, then 11/11 OK; commit `feat: add wk-skill-forge first version with bundled style guide`. |
+| Next condition | none |
+
+### RH-W-0002
+
+| Field | Value |
+|---|---|
+| Title | Stage 2: Topic research guide |
+| Status | completed |
+| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
+| Depends on | RH-W-0001 |
+| Origin | former root `ROADMAP.md`, stage 2. Original commits: `227a24c6`. |
+| Completed | Added the bundled `references/topic-sources.md` research guide, routed it from Create, and tightened the body budget to 700 tokens; files match original `227a24c6` renamed. |
+| Remaining | none |
+| Evidence | RED (4 failing: missing guide), then 13/13 OK; byte-identical to `227a24c6` after rename; commit `feat: add topic research guide to wk-skill-forge`. |
 | Next condition | none |

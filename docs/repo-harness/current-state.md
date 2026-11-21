@@ -15,6 +15,7 @@ The minimal repository AI harness exists. This file is only the concise projecti
 - Created the minimal repository AI harness and its visible continuity documentation.
 - Moved the recreation roadmap from root `ROADMAP.md` into [roadmap.md](roadmap.md) as records `RH-W-0001` to `RH-W-0012`, and removed `ROADMAP.md`.
 - `RH-W-0001` is `completed`: stage 1 recreated the first version of `wk-skill-forge` with its bundled style guide and contract tests.
+- `RH-W-0002` is `completed`: stage 2. Added the bundled `references/topic-sources.md` research guide, routed it from Create, and tightened the body budget to 700 tokens; files match original `227a24c6` renamed.
 
 ## Pending Work
 
@@ -26,4 +27,4 @@ The minimal repository AI harness exists. This file is only the concise projecti
 
 <!-- doc-role:next-step -->
 
-`wk-skill-forge/` holds the stage 1 skill (version 1.0). `RH-W-0002` is `ready`; `RH-W-0003` to `RH-W-0012` are `proposed`, each depending on the previous one. Next: the owner says to start stage 2.
+`wk-skill-forge/` holds the skill through stage 2. `RH-W-0003` is `ready`; `RH-W-0004` to `RH-W-0012` are `proposed`, each depending on the previous one. Next: the owner says to start stage 3.

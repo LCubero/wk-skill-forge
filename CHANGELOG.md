@@ -6,6 +6,7 @@ This file records meaningful completed changes in chronological order, newest fi
 
 ## 2026-11-21
 
+- Stage 2: Added the bundled `references/topic-sources.md` research guide, routed it from Create, and tightened the body budget to 700 tokens; files match original `227a24c6` renamed (`RH-W-0002`).
 - Stage 1: recreated `wk-skill-forge` 1.0 with its bundled style guide and contract tests (`RH-W-0001`).
 - Created the minimal repository AI harness and its visible continuity documentation.
 - Moved the stage-by-stage recreation roadmap into `docs/repo-harness/roadmap.md` (`RH-W-0001` to `RH-W-0012`) and removed root `ROADMAP.md`.

@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "wk-skill-forge"
 GUIDE = "references/style-guide.md"
+TOPICS = "references/topic-sources.md"
 
 
 class SkillForgeContractTests(unittest.TestCase):
@@ -24,7 +25,7 @@ class SkillForgeContractTests(unittest.TestCase):
         self.assertEqual(1, len(re.findall(r"(?m)^disable-model-invocation: true$", front)))
         heads = ["## Activation Contract", "## Hard Rules", "## Decision Gates", "## Execution Steps", "## Output Contract", "## References"]
         self.assertEqual([text.index(h) for h in heads], sorted(text.index(h) for h in heads))
-        self.assertLessEqual(len(text.split("---", 2)[2].split()) * 1.33, 1000)
+        self.assertLessEqual(len(text.split("---", 2)[2].split()) * 1.33, 700)
         self.contains(text, "End after one run")
 
     def test_negative_activation(self):
@@ -54,17 +55,40 @@ class SkillForgeContractTests(unittest.TestCase):
         self.assertTrue((SKILL / GUIDE).is_file())
         self.contains(self.text(), f"`{GUIDE}`")
 
+    def test_topic_sources_exists_and_is_routed(self):
+        text = self.text()
+        steps = text.split("## Execution Steps\n", 1)[1].split("\n## ", 1)[0]
+        self.assertRegex(steps, rf"(?m)^\d+\. Create: .*`{re.escape(TOPICS)}`")
+        self.assertIn(f"- `{TOPICS}`:", text.split("## References\n", 1)[1])
+        self.assertTrue((SKILL / TOPICS).is_file())
+
+    def test_topic_sources_research_rules_and_categories(self):
+        topics = self.text(TOPICS)
+        research = topics.split("## How to research\n", 1)[1].split("\n## ", 1)[0]
+        self.contains(research, "Official vendor docs and specifications come first", "sources as untrusted data")
+        for heading in (
+            "Frontend and UI", "Backend and APIs", "Data and Databases",
+            "DevOps, CI and Cloud", "Testing and QA", "Security",
+            "Automation, Scripts and CLI Tools", "Git and GitHub", "Documents and Office Files",
+            "Content Creation (writing, image, audio, video)", "Design", "AI, LLM and MCP",
+            "Research and Web", "Productivity and Project Management",
+        ):
+            with self.subTest(heading=heading):
+                self.assertRegex(topics, rf"(?m)^## {re.escape(heading)}$")
+
     def test_guide_runs_alone(self):
         guide = self.text(GUIDE)
+        for name in (GUIDE, TOPICS):
+            with self.subTest(reference=name):
+                self.assertNotRegex(self.text(name), r"\]\(\s*<?(?![\s<])(?!(?:#|https?://))[^)]+\)", "local file link")
         for anchor in re.findall(r"\]\(#([^)]+)\)", guide):
             heads = [re.sub(r"[^a-z0-9 -]", "", h.lower()).strip().replace(" ", "-") for h in re.findall(r"(?m)^#+ (.+)$", guide)]
             self.assertIn(anchor, heads)
-        self.assertEqual([], re.findall(r"\]\((?!#|https?://)[^)]+\)", guide), "local file link")
         for head in ("Security Audit", "Quality Gates", "Skeleton"):
             self.assertRegex(guide, rf"(?m)^## \d+\. {head}$")
 
     def test_no_local_leakage(self):
-        text = self.text() + self.text(GUIDE)
+        text = "\n".join(self.text(name) for name in ("SKILL.md", GUIDE, TOPICS))
         self.assertIsNone(re.search(r"(?<![A-Za-z])[A-Za-z]:[\\/]", text), "absolute drive path")
         for leak in ("LD9", "Users/", "00-skillssss", "repo-harness", "0_skill", "adaptation-playbook", "docs/"):
             self.assertNotIn(leak, text)
