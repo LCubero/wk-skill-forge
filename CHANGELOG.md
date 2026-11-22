@@ -6,6 +6,7 @@ This file records meaningful completed changes in chronological order, newest fi
 
 ## 2026-11-21
 
+- Stage 11: Added Evaluate mode for external candidates with the bundled `references/intake.md` (acquire, extract, compare, decide G1-G7, verdict), then checked linked ancestors, local sources, and zip entry types; folded reference commit `38110bef` (drop trailing slash before link checks) (`RH-W-0011`).
 - Tagged `v1.0.0` on the stage 10 commit: the recreation milestone v0, identical to the original version 0 after the rename.
 - Stage 10: Purpose-first intake with an early, scoped duplicate check merged into intake, no-follow inventory, and needed-tool checks; folded reference commit `b48d2c0d` (lighter partial intake, real-input test hint, document checks), closing version 0 (`RH-W-0010`).
 - Stage 9: Made inheritance proportional, Create status honest, and link checks OS-neutral (`RH-W-0009`).

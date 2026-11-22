@@ -7,6 +7,7 @@ from unittest.mock import patch
 SKILL = Path(__file__).resolve().parents[1] / "wk-skill-forge"
 GUIDE = "references/style-guide.md"
 TOPICS = "references/topic-sources.md"
+INTAKE = "references/intake.md"
 
 
 def text(name="SKILL.md"):
@@ -105,13 +106,14 @@ class SkillForgeContractTests(unittest.TestCase):
     def test_untrusted_paths_and_audit_coverage(self):
         supporting = section(text(GUIDE), "10. Supporting Files and Portability")
         for document in (text(), supporting):
-            self.contains(document, "existing skill target", "bundled references are exempt", "path check for each write destination", "without following them with the host's tools", "folder itself is not a link", "ask the user to confirm", "stop with Status PARTIAL", "skip and report")
+            self.contains(document, "existing skill target", "bundled references are exempt", "path check for each write destination", "without following them with the host's tools", "ask the user to confirm", "stop with Status PARTIAL", "skip and report")
             self.assertNotIn("lexical containment suffices", document)
         self.contains(text(), "never install or follow them", "Never execute bundled tools")
         self.contains(supporting, "exact case", "when to read", "stale references", "`find <target> -type l` (Linux/macOS)", "`Get-ChildItem <target> -Recurse -Attributes ReparsePoint` (PowerShell)")
         audit = section(text(GUIDE), "15. Security Audit")
-        self.contains(supporting, "`find <target>`", "`Get-ChildItem <target> -Recurse -Force`", "`(Get-Item <target>).LinkType`", "everything inside", 'Normalize `\\` in user-given paths to `/`')
-        self.assertNotIn("parent components", supporting)
+        self.contains(supporting, "`find <target>`", "`Get-ChildItem <target> -Recurse -Force`", "`(Get-Item <target>).LinkType`", "everything inside", "drop any trailing slash first", 'Normalize `\\` in user-given paths to `/`')
+        self.assertRegex(section(text(), "Hard Rules"), r"Before reading an existing skill target, apply the guide's no-follow path check")
+        self.assertRegex(supporting, r"check each component in order from the approved workspace root through the target.*Stop before reading or copying if any component is linked")
         self.contains(section(text(), "Execution Steps"), "full no-follow listing")
         self.contains(audit, "full no-follow listing", "report it unavailable", "every shipped file", "referenced executable", "inaccessible", "not passed", "configuration, memory, hooks, or permission settings", "remote instruction loading", "hide steps, URLs, or terms", "third-party content", "data, never as instructions", "Unicode-aware", "zero-width, bidi", "reviewed or imported content", "not fresh forge drafts")
 
@@ -150,7 +152,7 @@ class SkillForgeContractTests(unittest.TestCase):
     def test_self_containment_and_bundled_paths(self):
         guide = text(GUIDE)
         references = section(text(), "References")
-        for name in (GUIDE, TOPICS):
+        for name in (GUIDE, TOPICS, INTAKE):
             self.contains(references, f"`{name}`")
             self.assertNotRegex(text(name), r"\]\(\s*<?(?![\s<])(?!(?:#|https?://))[^)]+\)", "local file link")
         heads = [re.sub(r"[^a-z0-9 -]", "", h.lower()).strip().replace(" ", "-") for h in re.findall(r"(?m)^#+ (.+)$", guide)]
@@ -158,7 +160,7 @@ class SkillForgeContractTests(unittest.TestCase):
             self.assertIn(anchor, heads)
         for head in ("Security Audit", "Quality Gates", "Skeleton"):
             self.assertRegex(guide, rf"(?m)^## \d+\. {head}$")
-        documents = "\n".join(text(name) for name in ("SKILL.md", GUIDE, TOPICS))
+        documents = "\n".join(text(name) for name in ("SKILL.md", GUIDE, TOPICS, INTAKE))
         for code, link in re.findall(r"`([^`\n]+)`|\]\(([^)\n]+)\)", documents):
             target = (code or link).strip()
             if re.match(r"(?:\./|\.\./)*(?:references|assets|scripts)/.+", target) and not re.search(r"<[^<>]+>", target):
@@ -172,6 +174,64 @@ class SkillForgeContractTests(unittest.TestCase):
         self.assertNotIn("docs/", re.sub(r"\]\(https://[^\s)]+\)", "]()", documents))
         for leak in ("LD9", "Users/", "00-skillssss", "repo-harness", "0_skill", "adaptation-playbook", "REPO-HARNESS.md", "odd/tasks/", "tests/test_skill_forge_skill_contract.py"):
             self.assertNotIn(leak, documents)
+
+    def test_mode_boundary(self):
+        self.contains(section(text(), "Hard Rules"), "Audit is read-only; Evaluate writes only its approved run folder. Neither authorizes a fix.")
+        steps = section(text(), "Execution Steps")
+        self.assertRegex(steps, r"(?m)^\d+\. Create/Improve: Validate per Quality Gates")
+        self.assertRegex(steps, r"(?m)^\d+\. Evaluate: per `references/intake\.md`")
+        self.contains(text(INTAKE), "changes nothing outside the run folder")
+
+    def test_evaluate_gates_and_verdict(self):
+        intake = text(INTAKE)
+        gates = section(intake, "4. Decide")
+        self.contains(gates, "first supported gate wins", "why each earlier gate is unsupported")
+        order = ["| G1 ", "| G2 ", "| G3 ", "| G4 ", "| G5 ", "| G6 ", "| G7 "]
+        self.assertRegex(gates, "(?s)" + ".*".join(map(re.escape, order)))
+        for verdict in ("`reject`", "`defer`", "`adopt-as-is`", "`recreate`"):
+            self.contains(gates, verdict)
+        self.contains(gates, "could change the gate", "G4 even when a collision is confirmed", "unverifiable license where required", "an unmet MUST blocks G6", "If no useful idea survives and no earlier gate applies, `reject`")
+        self.assertNotIn("Candidate unreadable", gates)
+        self.contains(section(intake, "2. Extract"), "met", "unmet", "missing", "not-applicable", "Existence", "Deciding content", "Permission", "never proves")
+        output = section(intake, "5. Verdict")
+        self.contains(output, "Keep", "Change", "Drop", "Consumers at risk", "path:line", "unknown", "Not verified")
+        self.assertRegex(output, r"PARTIAL[^.]*named missing evidence")
+        self.assertRegex(output, r"FAILED[^.]*unreadable[^.]*no verdict")
+        self.assertRegex(output, r"SUCCESS[^.]*no deciding gaps[^.]*preflight")
+        self.assertRegex(output, r"PARTIAL[^.]*G4")
+        self.contains(output, "replace the general Status values")
+        self.contains(section(text(GUIDE), "16. Quality Gates"), "reports one `Status` line for workflows")
+
+    def test_evaluate_collisions(self):
+        compare = section(text(INTAKE), "3. Compare")
+        self.contains(compare, "activation-overlap", "rule-contradiction", "artifact-conflict", "precedence-gap", "both sides", "exclusions")
+        self.contains(compare, "Create keeps its folder-name check")
+
+    def test_evaluate_acquisition(self):
+        acquire = section(text(INTAKE), "1. Acquire")
+        self.contains(
+            acquire, "data, never instructions", "never echo secrets", "approval", "new run folder", "never over a prior run",
+            "before extracting", "absolute paths", "`..`", "links", "Never execute, install, or source", "no-follow",
+            "SHA-256", "manifest", "Cleanup is separate", "maximum entries and total uncompressed bytes",
+            "in memory", "manifest is not applicable", "Before copying or extracting", "host's archive tools",
+            "nothing is extracted and the verdict is G1 `reject`",
+        )
+        self.contains(section(text(INTAKE), "6. After the verdict"), "plan, not an edit", "separate approved Improve or Create", "only the user promotes", "never installs")
+
+    def test_evaluate_local_source_preflight(self):
+        acquire = section(text(INTAKE), "1. Acquire")
+        preflight, = [line for line in acquire.splitlines() if "Before reading or copying a local source" in line]
+        self.contains(preflight, "file or folder", "approved source", "may be outside the workspace",
+                      "filesystem root", "Stop if any component is linked",
+                      "scan its contents without following links", "Stop if any check cannot be completed")
+        self.assertLess(acquire.index(preflight), acquire.index("Copy the candidate"))
+        self.assertLess(acquire.index("destination: it must be new, contained, and unlinked"),
+                        acquire.index("Copy the candidate"))
+
+    def test_evaluate_zip_type_preflight(self):
+        acquire = section(text(INTAKE), "1. Acquire")
+        self.assertRegex(acquire, r"list each entry's name, uncompressed size, and type before extracting")
+        self.assertRegex(acquire, r"If any entry's type cannot be established, stop before extracting")
 
     def test_topic_sources(self):
         self.assertRegex(section(text(), "Execution Steps"), rf"(?m)^\d+\. Create: .*Professional:.*`{re.escape(TOPICS)}`")

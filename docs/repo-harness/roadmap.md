@@ -49,33 +49,19 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 ## Active Records
 <!-- doc-role:active-records -->
 
-### RH-W-0011
-
-| Field | Value |
-|---|---|
-| Title | Stage 11: Evaluate mode for external skills |
-| Status | ready |
-| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
-| Depends on | RH-W-0010 |
-| Origin | former root `ROADMAP.md`, stage 11. Original commits: `f772a1c1`, `a91cf48a`. |
-| Completed | none |
-| Remaining | recreate the stage following the Recreation Method. |
-| Evidence | none yet. |
-| Next condition | the owner says to start stage 11. |
-
 ### RH-W-0012
 
 | Field | Value |
 |---|---|
 | Title | Stage 12: Judgment Day fixes |
-| Status | proposed |
+| Status | ready |
 | Priority | `P1` (sequential recreation; each stage builds on the previous one) |
 | Depends on | RH-W-0011 |
 | Origin | former root `ROADMAP.md`, stage 12. Original commits: `dc008e1d`. |
 | Completed | none |
 | Remaining | recreate the stage following the Recreation Method. |
 | Evidence | none yet. |
-| Next condition | RH-W-0011 is `completed` and the owner says to start stage 12. |
+| Next condition | the owner says to start stage 12. |
 
 ## Resolved Records
 <!-- doc-role:resolved-records -->
@@ -218,4 +204,18 @@ The original folder had 24 commits; the 19 in the records below changed `SKILL.m
 | Completed | Purpose-first intake with an early, scoped duplicate check merged into intake, no-follow inventory, and needed-tool checks; folded reference commit `b48d2c0d` (lighter partial intake, real-input test hint, document checks), closing version 0 |
 | Remaining | none |
 | Evidence | RED (failures=16, errors=1), then 10/10 OK; byte-identical to `b48d2c0d` after rename; commit `fix: purpose-first intake and early duplicate check in wk-skill-forge`. |
+| Next condition | none |
+
+### RH-W-0011
+
+| Field | Value |
+|---|---|
+| Title | Stage 11: Evaluate mode for external skills |
+| Status | completed |
+| Priority | `P1` (sequential recreation; each stage builds on the previous one) |
+| Depends on | RH-W-0010 |
+| Origin | former root `ROADMAP.md`, stage 11. Original commits: `f772a1c1`, `a91cf48a`. |
+| Completed | Added Evaluate mode for external candidates with the bundled `references/intake.md` (acquire, extract, compare, decide G1-G7, verdict), then checked linked ancestors, local sources, and zip entry types; folded reference commit `38110bef` (drop trailing slash before link checks) |
+| Remaining | none |
+| Evidence | RED (failures=5, errors=6), then 16/16 OK; byte-identical to `a91cf48a` after rename; commit `feat: add Evaluate mode for external skills to wk-skill-forge`. |
 | Next condition | none |

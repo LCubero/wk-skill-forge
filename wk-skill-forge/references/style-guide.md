@@ -174,7 +174,8 @@ A skill MUST work when copied alone into any host layout.
 
 - Use forward-slash paths relative to the skill folder, never absolute or pointing to user homes, installations, or other skills.
 - Declare project paths relative to the runtime-resolved project root. Normalize `\` in user-given paths to `/`.
-- Before reading an existing skill target, verify the folder itself is not a link; check everything inside for links without following them with the host's tools: `find <target> -type l` (Linux/macOS) also checks the folder; check `(Get-Item <target>).LinkType` before `Get-ChildItem <target> -Recurse -Attributes ReparsePoint` (PowerShell). Read only contained paths without links from the target down; skip and report others. Without tools, ask the user to confirm no links or run the check; else stop with Status PARTIAL. Read `SKILL.md` first; check exact case, anchors, and stale references. Forge bundled references are exempt.
+- No-follow path check for an existing file or folder: require containment, drop any trailing slash first, and check each component in order from the approved workspace root through the target without following links (`test -L` on Linux/macOS; `(Get-Item <target>).LinkType` on PowerShell, including junctions). Stop before reading or copying if any component is linked; do not descend past it.
+- For an existing skill target, then check everything inside for links without following them with the host's tools: `find <target> -type l` (Linux/macOS) or `Get-ChildItem <target> -Recurse -Attributes ReparsePoint` (PowerShell). Read only contained, unlinked paths; skip and report others. Without tools, ask the user to confirm no links along the path or inside it, or run the check; else stop with Status PARTIAL. Read `SKILL.md` first; check exact case, anchors, and stale references. Forge bundled references are exempt.
 - Full no-follow inventory: `find <target>` (reports even a linked target) or, after the PowerShell folder check, `Get-ChildItem <target> -Recurse -Force`. Never recurse through links.
 - Run the path check for each write destination: contained, no linked components, new path or regular file.
 - Use `references/<inventory-file>.md` (convention: `companion-index.md`) only for inventory lists, never required instructions.
@@ -271,7 +272,7 @@ A failed MUST is `blocking` only when its harm is reachable in normal use; other
 - [ ] Section order is clear; nothing follows References.
 - [ ] Body within budget, or exception recorded.
 - [ ] Capability wording works across runtimes.
-- [ ] Output reports only confirmed results and ends with `Status` for workflows.
+- [ ] Output reports only confirmed results and reports one `Status` line for workflows.
 - [ ] Contract tests cover activation, negative activation, precedence, references, and effect gates.
 - [ ] Run targeted evaluation or a live run only on user request; record host, date, revision, and result, or mark unverified. Keep `user-reported` results separate.
 
