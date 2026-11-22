@@ -4,6 +4,10 @@
 
 This file records meaningful completed changes in chronological order, newest first. Current state and future work belong in `docs/repo-harness/current-state.md`.
 
+## 2026-11-23
+
+- Stage 12: Closed Judgment Day warnings (only required details in output, `Drop (with reason)`, `recreate` writes only to `<run-id>/candidate/`, `-Force` in the PowerShell link check); folded reference commit `0e515b97` (portable Unicode search commands in audits) (`RH-W-0012`).
+
 ## 2026-11-21
 
 - Stage 11: Added Evaluate mode for external candidates with the bundled `references/intake.md` (acquire, extract, compare, decide G1-G7, verdict), then checked linked ancestors, local sources, and zip entry types; folded reference commit `38110bef` (drop trailing slash before link checks) (`RH-W-0011`).

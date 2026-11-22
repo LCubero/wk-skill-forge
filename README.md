@@ -16,4 +16,4 @@ The original was developed as `wk-skill-forge-ld9` in `<original-repo>`, a local
 
 ## Status
 
-Stage 11 of 12 done: `wk-skill-forge/` holds the skill through stage 11. Progress lives in the [roadmap](docs/repo-harness/roadmap.md).
+Stage 12 of 12 done: `wk-skill-forge/` holds the skill through stage 12. Progress lives in the [roadmap](docs/repo-harness/roadmap.md).

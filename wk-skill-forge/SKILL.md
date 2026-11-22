@@ -46,7 +46,7 @@ Only when the user invokes this skill by name; never activate on topic overlap. 
 
 ## Output Contract
 
-All modes: start with 2–3 lines: what was done, Status, decisions needed. Show details only for findings or failures; omit empty sections. Findings: `severity · path:line · rule · fix`. Checks: passed, failed, skipped, unverified. Static checks aren't live.
+All modes: start with 2–3 lines: what was done, Status, decisions needed. Show only required details, findings, and failures; omit empty sections. Findings: `severity · path:line · rule · fix`. Checks: passed, failed, skipped, unverified. Static checks aren't live.
 
 Create and Improve imply a write. `Status: SUCCESS | PARTIAL | FAILED`. FAILED: unreadable except path-check stops, or approved write fails. PARTIAL: missing intake, blockers, incomplete audit coverage, requested write pending, declined, or impossible. SUCCESS: complete; draft-only only on request. Unverified checks aren't blockers.
 

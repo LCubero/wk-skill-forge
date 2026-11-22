@@ -69,11 +69,11 @@ Return, citing `path:line` or a command result for each claim:
 - Candidate: source, name, version, author, license (or `unknown`), and manifest path.
 - Assumptions with statuses; collisions by axis.
 - Verdict, its deciding gate, and the earlier-gate checks.
-- For `recreate`: Keep (domain behavior worth adapting), Change (runtime, paths, commands), Drop (with reason, including unsafe parts), and Consumers at risk (other skills or scripts using the same outputs).
+- For `recreate`: Keep (domain behavior worth adapting), Change (runtime, paths, commands), Drop (with reason), and Consumers at risk (other skills or scripts using the same outputs).
 - Not verified: each item that could not be inspected, and why.
 
 These values replace the general Status values in `SKILL.md` for Evaluate. SUCCESS: a supported verdict with no deciding gaps, including a G1 rejection at preflight. PARTIAL: G4, or a verdict reached with named missing evidence. FAILED: the candidate is unreadable, so no verdict is possible.
 
 ## 6. After the verdict
 
-A `recreate` verdict is a plan, not an edit. Adapting it is a separate approved Improve or Create run that writes the result inside the run folder. The forge never installs; only the user promotes a result into a skills collection.
+A `recreate` verdict is a plan, not an edit. Adapting it is a separate approved Improve or Create run that writes the result only to `<run-id>/candidate/` and leaves `<run-id>/source/` unchanged. The forge never installs; only the user promotes a result into a skills collection.

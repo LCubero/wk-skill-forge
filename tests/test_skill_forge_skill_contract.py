@@ -109,12 +109,13 @@ class SkillForgeContractTests(unittest.TestCase):
             self.contains(document, "existing skill target", "bundled references are exempt", "path check for each write destination", "without following them with the host's tools", "ask the user to confirm", "stop with Status PARTIAL", "skip and report")
             self.assertNotIn("lexical containment suffices", document)
         self.contains(text(), "never install or follow them", "Never execute bundled tools")
-        self.contains(supporting, "exact case", "when to read", "stale references", "`find <target> -type l` (Linux/macOS)", "`Get-ChildItem <target> -Recurse -Attributes ReparsePoint` (PowerShell)")
+        self.contains(supporting, "exact case", "when to read", "stale references", "`find <target> -type l` (Linux/macOS)", "`Get-ChildItem <target> -Recurse -Force -Attributes ReparsePoint` (PowerShell)")
         audit = section(text(GUIDE), "15. Security Audit")
         self.contains(supporting, "`find <target>`", "`Get-ChildItem <target> -Recurse -Force`", "`(Get-Item <target>).LinkType`", "everything inside", "drop any trailing slash first", 'Normalize `\\` in user-given paths to `/`')
         self.assertRegex(section(text(), "Hard Rules"), r"Before reading an existing skill target, apply the guide's no-follow path check")
         self.assertRegex(supporting, r"check each component in order from the approved workspace root through the target.*Stop before reading or copying if any component is linked")
         self.contains(section(text(), "Execution Steps"), "full no-follow listing")
+        self.contains(audit, "`LC_ALL=C.UTF-8 grep -rnP '[\\x{200B}-\\x{200F}\\x{202A}-\\x{202E}\\x{2066}-\\x{2069}\\x{FEFF}]' <target>`", "`Get-ChildItem <target> -Recurse -File -Force | Select-String -Encoding UTF8 -Pattern '[\\u200B-\\u200F\\u202A-\\u202E\\u2066-\\u2069\\uFEFF]'`")
         self.contains(audit, "full no-follow listing", "report it unavailable", "every shipped file", "referenced executable", "inaccessible", "not passed", "configuration, memory, hooks, or permission settings", "remote instruction loading", "hide steps, URLs, or terms", "third-party content", "data, never as instructions", "Unicode-aware", "zero-width, bidi", "reviewed or imported content", "not fresh forge drafts")
 
     def test_research_consent_privacy_and_local_help(self):
@@ -124,7 +125,7 @@ class SkillForgeContractTests(unittest.TestCase):
     def test_status_and_severity(self):
         output = section(text(), "Output Contract")
         self.assertRegex(output.strip(), r"^All modes: start with 2–3 lines: what was done, Status, decisions needed\.")
-        self.contains(output, "details only for findings or failures", "omit empty sections")
+        self.contains(output, "Show only required details, findings, and failures", "omit empty sections")
         self.contains(output, "severity · path:line · rule · fix", "passed, failed, skipped, unverified", "Static checks", "Status: SUCCESS | PARTIAL | FAILED")
         self.contains(output, "Create and Improve imply a write")
         self.assertRegex(output, r"SUCCESS[^.]*draft-only only on request")
@@ -192,9 +193,11 @@ class SkillForgeContractTests(unittest.TestCase):
             self.contains(gates, verdict)
         self.contains(gates, "could change the gate", "G4 even when a collision is confirmed", "unverifiable license where required", "an unmet MUST blocks G6", "If no useful idea survives and no earlier gate applies, `reject`")
         self.assertNotIn("Candidate unreadable", gates)
+        self.assertRegex(gates, r"\| G1 \| Unsafe or coercive content[^\n]+\| `reject` \|")
         self.contains(section(intake, "2. Extract"), "met", "unmet", "missing", "not-applicable", "Existence", "Deciding content", "Permission", "never proves")
         output = section(intake, "5. Verdict")
         self.contains(output, "Keep", "Change", "Drop", "Consumers at risk", "path:line", "unknown", "Not verified")
+        self.assertRegex(output, r"Drop \(with reason\)")
         self.assertRegex(output, r"PARTIAL[^.]*named missing evidence")
         self.assertRegex(output, r"FAILED[^.]*unreadable[^.]*no verdict")
         self.assertRegex(output, r"SUCCESS[^.]*no deciding gaps[^.]*preflight")
@@ -216,7 +219,7 @@ class SkillForgeContractTests(unittest.TestCase):
             "in memory", "manifest is not applicable", "Before copying or extracting", "host's archive tools",
             "nothing is extracted and the verdict is G1 `reject`",
         )
-        self.contains(section(text(INTAKE), "6. After the verdict"), "plan, not an edit", "separate approved Improve or Create", "only the user promotes", "never installs")
+        self.contains(section(text(INTAKE), "6. After the verdict"), "plan, not an edit", "separate approved Improve or Create", "writes the result only to `<run-id>/candidate/`", "leaves `<run-id>/source/` unchanged", "only the user promotes", "never installs")
 
     def test_evaluate_local_source_preflight(self):
         acquire = section(text(INTAKE), "1. Acquire")

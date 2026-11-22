@@ -175,7 +175,7 @@ A skill MUST work when copied alone into any host layout.
 - Use forward-slash paths relative to the skill folder, never absolute or pointing to user homes, installations, or other skills.
 - Declare project paths relative to the runtime-resolved project root. Normalize `\` in user-given paths to `/`.
 - No-follow path check for an existing file or folder: require containment, drop any trailing slash first, and check each component in order from the approved workspace root through the target without following links (`test -L` on Linux/macOS; `(Get-Item <target>).LinkType` on PowerShell, including junctions). Stop before reading or copying if any component is linked; do not descend past it.
-- For an existing skill target, then check everything inside for links without following them with the host's tools: `find <target> -type l` (Linux/macOS) or `Get-ChildItem <target> -Recurse -Attributes ReparsePoint` (PowerShell). Read only contained, unlinked paths; skip and report others. Without tools, ask the user to confirm no links along the path or inside it, or run the check; else stop with Status PARTIAL. Read `SKILL.md` first; check exact case, anchors, and stale references. Forge bundled references are exempt.
+- For an existing skill target, then check everything inside for links without following them with the host's tools: `find <target> -type l` (Linux/macOS) or `Get-ChildItem <target> -Recurse -Force -Attributes ReparsePoint` (PowerShell). Read only contained, unlinked paths; skip and report others. Without tools, ask the user to confirm no links along the path or inside it, or run the check; else stop with Status PARTIAL. Read `SKILL.md` first; check exact case, anchors, and stale references. Forge bundled references are exempt.
 - Full no-follow inventory: `find <target>` (reports even a linked target) or, after the PowerShell folder check, `Get-ChildItem <target> -Recurse -Force`. Never recurse through links.
 - Run the path check for each write destination: contained, no linked components, new path or regular file.
 - Use `references/<inventory-file>.md` (convention: `companion-index.md`) only for inventory lists, never required instructions.
@@ -246,7 +246,7 @@ Use the full no-follow listing as inventory or report it unavailable. Inspect ev
 - **Integrity**: placeholder or invalid YAML, caches or build artefacts, and Supporting Files and Portability violations.
 - **Identity**: unverifiable author, license, version, provenance, or "official" claims, and lookalike domains.
 
-For reviewed or imported content, not fresh forge drafts, use a Unicode-aware search for invisible format/control characters (zero-width, bidi); inspect matches or mark unverified. If empty, report “no matches found” and the search used. Read the full execution path to verify effects; a clean search proves nothing.
+For reviewed or imported content, not fresh forge drafts, use a Unicode-aware search for invisible format/control characters (zero-width, bidi), for example `LC_ALL=C.UTF-8 grep -rnP '[\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2066}-\x{2069}\x{FEFF}]' <target>` (Linux/macOS; without the UTF-8 locale grep rejects the pattern) or `Get-ChildItem <target> -Recurse -File -Force | Select-String -Encoding UTF8 -Pattern '[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]'` (PowerShell); inspect matches or mark unverified. If empty, report “no matches found” and the search used. Read the full execution path to verify effects; a clean search proves nothing.
 
 ## 16. Quality Gates
 
