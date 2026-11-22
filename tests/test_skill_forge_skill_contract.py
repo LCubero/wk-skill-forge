@@ -35,7 +35,7 @@ class SkillForgeContractTests(unittest.TestCase):
 
     def test_identity_and_budget(self):
         _, front, body = text().split("---", 2)
-        self.contains(front, f"name: {SKILL.name}", "license: MIT", "author: LCubero", 'version: "1.0"', "origin: local-authored")
+        self.contains(front, f"name: {SKILL.name}", "license: MIT", "author: LCubero", 'version: "1.1"', "origin: local-authored")
         self.assertRegex(front, r'(?m)^description: "Trigger: wk-skill-forge\. .{1,132}"$')
         self.assertEqual(re.findall(r"(?m)^## (.+)$", body), ["Activation Contract", "Hard Rules", "Decision Gates", "Execution Steps", "Output Contract", "References"])
         self.assertLessEqual(len(body.split()) * 1.33, 700)
