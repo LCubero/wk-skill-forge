@@ -4,8 +4,9 @@
 
 This file records meaningful completed changes in chronological order, newest first. Current state and future work belong in `docs/repo-harness/current-state.md`.
 
-## 2026-11-23
+## 2026-11-22
 
+- Set the project time zone to `America/Costa_Rica` for changelog dates and session backups, and corrected this day's changelog date.
 - Added the Spanish README (`README.es.md`) with reciprocal language links.
 - Rewrote the root README to lead with what the skill does, how to install and use it, and its safety defaults.
 - Set the skill version to 1.1 and tagged `v1.1.0`: stages 1-12, identical to the original final version after the rename except for the version line.

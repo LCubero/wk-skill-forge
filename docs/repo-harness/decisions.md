@@ -13,4 +13,5 @@
 - This repository holds only the global skill `wk-skill-forge`; it develops the skill and does not install or distribute it.
 - `<original-repo>`, the local clone of the original repository, is a read-only reference for the original `wk-skill-forge-ld9`: read its commits, never modify it.
 - The recreation advances one stage at a time and only when the owner names the stage; stages are lifecycle records in [roadmap.md](roadmap.md), and root `ROADMAP.md` was removed so the plan has one owner.
+- Dates and times use the `America/Costa_Rica` time zone (UTC-06:00, no daylight saving): changelog dates, backup filenames, and timestamps. The harness reads it from the local preference `timeZone`.
 - Runtime folders `.pi/` and `.opencode/` are local-only and ignored by Git; the canonical harness sources live in `.repo-harness/`.
