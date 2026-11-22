@@ -1,5 +1,11 @@
 # wk-skill-forge
 
+<!-- README-I18N:START -->
+
+**English** | [Español](./README.es.md)
+
+<!-- README-I18N:END -->
+
 A global, command-only agent skill that **creates, audits, improves, and evaluates** LLM-first agent skills, so each one runs alone under any CLI agent.
 
 Versions and notes: [Releases](https://github.com/LCubero/wk-skill-forge/releases).

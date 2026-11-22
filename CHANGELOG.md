@@ -6,6 +6,7 @@ This file records meaningful completed changes in chronological order, newest fi
 
 ## 2026-11-23
 
+- Added the Spanish README (`README.es.md`) with reciprocal language links.
 - Rewrote the root README to lead with what the skill does, how to install and use it, and its safety defaults.
 - Set the skill version to 1.1 and tagged `v1.1.0`: stages 1-12, identical to the original final version after the rename except for the version line.
 - Stage 12: Closed Judgment Day warnings (only required details in output, `Drop (with reason)`, `recreate` writes only to `<run-id>/candidate/`, `-Force` in the PowerShell link check); folded reference commit `0e515b97` (portable Unicode search commands in audits) (`RH-W-0012`).
